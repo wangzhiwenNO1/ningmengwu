@@ -2,22 +2,31 @@
     <div class="tab-bars">
         <el-row>
             <el-col :span="8">
-                <div class="grid-content bg-purple-dark icon-box">
-                    <img src="../assets/img/Ahome.png" alt=""/>
-                </div>
-                <span class="icon-title active">首页</span>
+                <router-link to="/">
+                    <div class="grid-content bg-purple-dark icon-box">
+                        <img src="../assets/img/Ahome.png" alt=""/>
+                    </div>
+                    <span class="icon-title active">首页</span>
+                </router-link>
+
             </el-col>
             <el-col :span="8">
-                <div class="grid-content bg-purple-dark icon-box">
-                    <img src="../assets/img/order.png" alt=""/>
-                </div>
-                <span class="icon-title">订单</span>
+                <router-link to="/">
+                    <div class="grid-content bg-purple-dark icon-box">
+                        <img src="../assets/img/order.png" alt=""/>
+                    </div>
+                    <span class="icon-title">订单</span>
+                </router-link>
+
             </el-col>
             <el-col :span="8">
-                <div class="grid-content bg-purple-dark icon-box">
-                    <img src="../assets/img/personal.png" alt=""/>
-                </div>
-                <span class="icon-title">我的</span>
+                <router-link to="/">
+                    <div class="grid-content bg-purple-dark icon-box">
+                        <img src="../assets/img/personal.png" alt=""/>
+                    </div>
+                    <span class="icon-title">我的</span>
+                </router-link>
+
             </el-col>
         </el-row>
     </div>
