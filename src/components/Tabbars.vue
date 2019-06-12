@@ -50,13 +50,14 @@ export default {
     bottom:0;
     left:0;
     width:100%;
-    height:45pt;
+    height:50px;
     text-align: center;
     border-top:1px solid #ddd;
+    background:white;
 
     .icon-box{
-        width:30pt;
-        height:30pt;
+        width:30px;
+        height:30px;
         margin:0 auto;
         img{
             width:100%;
@@ -64,7 +65,7 @@ export default {
         }
     }
     .icon-title{
-        font-size:10pt;
+        font-size:12px;
         color:rgba(196, 196, 196, 1);
     }
     .active{

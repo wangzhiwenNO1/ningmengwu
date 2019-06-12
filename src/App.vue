@@ -1,20 +1,18 @@
 <template>
   <div id="app">
-    <HomeList></HomeList>
+    <router-view />
     <Tabbars></Tabbars>
   </div>
 </template>
 
 <script>
 import Tabbars from './components/Tabbars'
-import HomeList from './views/HomeList'
 import './assets/css/reset.css'
 
 export default {
   name: 'app',
   components: {
     Tabbars,
-    HomeList
   }
 }
 </script>
