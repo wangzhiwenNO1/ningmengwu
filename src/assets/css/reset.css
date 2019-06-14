@@ -2,6 +2,9 @@ html,body,p,ul,ol,h1,h2,h3,h4,h5{
     margin:0;
     padding:0;
 }
+html,body{
+    background:rgba(245,245,245,1);
+}
 ul,ol{
     list-style:none
 }
@@ -11,3 +14,4 @@ a{
 .icon{
     display:inline-block;
 }
+

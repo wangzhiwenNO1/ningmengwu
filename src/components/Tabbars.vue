@@ -52,7 +52,7 @@ export default {
     width:100%;
     height:50px;
     text-align: center;
-    border-top:1px solid #ddd;
+    box-shadow:0px -4px 8px 0px rgba(0,0,0,0.03);
     background:white;
 
     .icon-box{

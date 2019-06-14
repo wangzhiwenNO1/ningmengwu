@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Me from './views/Me.vue'
+import OrderAdd from './views/OrderAdd.vue'
 
 Vue.use(Router)
 
@@ -11,8 +11,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Me',
-      component: Me
+      name: 'OrderAdd',
+      component: OrderAdd
     },
     {
       path: '/homelist',
@@ -26,6 +26,36 @@ export default new Router({
       path:'/hotel',
       name: 'hotel',
       component: () => import('./views/Hotel.vue')
-    }
+    },
+    {
+      path:'/information',
+      name: 'information',
+      component: () => import('./views/Information.vue')
+    },
+    {
+      path:'/invoice',
+      name: 'invoice',
+      component: () => import('./views/Invoice.vue')
+    },
+    {
+      path:'/homepage',
+      name: 'homepage',
+      component: () => import('./views/HomePage.vue')
+    },
+    {
+      path:'/order',
+      name: 'order',
+      component: () => import('./views/OrderForm.vue')
+    },
+    {
+      path:'/indent',
+      name: 'indent',
+      component: () => import('./views/Indent.vue')
+    },
+    {
+      path:'/orderadd',
+      name: 'orderadd',
+      component: () => import('./views/OrderAdd.vue')
+    },
   ]
 })
