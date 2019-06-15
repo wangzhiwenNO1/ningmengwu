@@ -7,7 +7,7 @@
             </el-col>
             <el-col :span="13" class="title">鹏程国家大酒店</el-col>
             <el-col :span="6" class="other-box">
-                <div class="other">其他酒店</div>
+                <div class="other" @click="otherHotel">其他酒店</div>
             </el-col>
         </el-row>
     </div>
@@ -18,12 +18,18 @@
 
     export default {
         name: 'HomeListTop',
+        methods:{
+            otherHotel(){
+                this.$router.push({ path:'/hotel'})
+            }
+        }
 
     }
 </script>
 <style lang="less" scoped>
     .home-top{
         height: 40px;
+        background:white;
     }
     .site-box{
         padding:0 0 0 5px;
@@ -35,16 +41,16 @@
             align-items: center;
 
             .icon{
-                width:16pt;
-                height:16pt;
-                background:pink;
-                display: inline-block;
+                width:16px;
+                height:16px;
+                background: url("../../assets/img/site.png") no-repeat;
+                background-size:cover;
+                display: block;
                 margin-right:5px;
             }
         }
         .title{
             font-size:20px;
-            font-family:PingFangSC-Semibold;
             font-weight:600;
             color:rgba(51,51,51,1);
             line-height:26pt;

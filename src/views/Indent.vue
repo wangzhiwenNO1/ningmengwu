@@ -1,10 +1,10 @@
 <template>
     <div class="indentBox">
         <ul class="indentTop">
-            <li class="active">待支付</li>
-            <li>进行中</li>
-            <li>已完成</li>
-            <li>已取消</li>
+            <li :class="part==1?'active':''" @click="changeClick(1)">待支付</li>
+            <li :class="part==2?'active':''" @click="changeClick(2)">进行中</li>
+            <li :class="part==3?'active':''" @click="changeClick(3)">已完成</li>
+            <li :class="part==4?'active':''" @click="changeClick(4)">已取消</li>
         </ul>
         <div>
             <UnIndent v-if="part==1"></UnIndent>
@@ -35,7 +35,9 @@
             };
         },
         methods:{
-
+            changeClick(index){
+                this.part=index;
+            }
         }
     }
 </script>

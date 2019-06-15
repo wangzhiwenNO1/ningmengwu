@@ -16,7 +16,7 @@
             <div class="house-list">
                 <h5>标准间</h5>
                 <ul class="standard">
-                    <li v-for="(item,index) in 5" :key="index">
+                    <li v-for="(item,index) in 5" :key="index" @click="jump">
                         <img src="../../assets/img/standard.png" alt="">
                         <div class="intro">
                             <p class="room-num">房号：202</p>
@@ -26,7 +26,7 @@
                 </ul>
                 <h5>大床房</h5>
                 <ul class="big-bed">
-                    <li v-for="(item,index) in 5" :key="index">
+                    <li v-for="(item,index) in 5" :key="index" @click="jump">
                         <img src="../../assets/img/bigbed.png" alt="">
                         <div class="intro">
                             <p class="room-num">房号：202</p>
@@ -61,7 +61,9 @@
 
         },
         methods: {
-
+            jump(){
+                this.$router.push({ path:'/orderadd'})
+            }
         }
     }
 </script>

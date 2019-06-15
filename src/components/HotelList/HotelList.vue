@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div>
+        <div class="bgColor"></div>
+        <div class="siteBox">
             <el-row>
                 <el-col :span="18">
                     <div class="input-box">
@@ -14,7 +15,7 @@
             </el-row>
         </div>
         <ul class="hotellist">
-            <li v-for="(item,index) in 5" :key="index">
+            <li v-for="(item,index) in 15" :key="index" @click="changeClick">
                 <el-row :gutter="20">
                     <el-col :span="5">
                         <div class="picture"><img src="../../assets/img/bigbed.png" alt=""/></div>
@@ -44,10 +45,25 @@
             return{
                 input2:''
             }
+        },
+        methods:{
+            changeClick(){
+                this.$router.push({ path:'/'});
+            }
         }
     }
 </script>
 <style lang="less" scoped>
+    .bgColor{
+        background:white;
+        height:100vh;
+        width:100%;
+        position:fixed;
+        z-index: -1;
+    }
+    .siteBox{
+        background:white;
+    }
     .input-box{
         width:260px;
         height:30px;
@@ -82,22 +98,25 @@
         justify-content: center;
         font-size:13px;
         color:rgba(70, 70, 70, 1);
+
         .icon{
             display: inline-block;
-            width:11px;
+            width:12px;
             height:14px;
-            background:rgba(162,162,162,1);
+            background: url("../../assets/img/site.png") no-repeat;
+            background-size:cover ;
+            margin-right:3px;
         }
     }
 .hotellist{
     li{
         width:100%;
         height:105px;
-        box-shadow:0px 1px 0px 0px rgba(0,0,0,0.1);
+        border-bottom:1px solid rgba(0,0,0,0.1);
         box-sizing:border-box;
         padding:20px 15px;
         text-align: left;
-
+        background:white;
         .picture{
             width:55px;
             height:65px;

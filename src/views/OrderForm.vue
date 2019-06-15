@@ -26,6 +26,9 @@
             return{
                 part:3
             }
+        },
+        created() {
+            this.part=this.$route.query.type;
         }
     }
 </script>

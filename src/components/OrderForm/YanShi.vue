@@ -12,15 +12,18 @@
             <div class="info">
                 <div class="infoItem">
                     <div class="name">房费</div>
-                    <div>均¥320*1间*3晚</div>
+                    <i class="xian"></i>
+                    <div class="information">均¥320*1间*3晚</div>
                 </div>
                 <div class="infoItem">
                     <div class="name">押金</div>
-                    <div>无(续住房只需续交房费即可)</div>
+                    <i class="xian"></i>
+                    <div class="information">无(续住房只需续交房费即可)</div>
                 </div>
                 <div class="infoItem">
                     <div class="name">合计</div>
-                    <div>¥320</div>
+                    <i class="xian"></i>
+                    <div class="information">¥320</div>
                 </div>
             </div>
         </div>
@@ -113,6 +116,17 @@
                     padding:7px 0;
                     justify-content: space-between;
                     align-items: center;
+                    .name{
+                        flex-shrink: 0;
+                    }
+                    .information{
+                        flex-shrink: 0;
+                    }
+                    .xian{
+                        display: block;
+                        width:100%;
+                        border-bottom:1px dashed  #E7E7E7;
+                    }
                 }
             }
         }

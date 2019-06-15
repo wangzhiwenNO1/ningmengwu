@@ -1,22 +1,22 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import OrderAdd from './views/OrderAdd.vue'
+import HomeList from './views/HomeList.vue'
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
+  // mode: 'history',
+  // base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
-      name: 'OrderAdd',
-      component: OrderAdd
+      name: 'HomeList',
+      component: HomeList
     },
     {
       path: '/homelist',
-      name: 'HomeList',
+      name: 'homeList',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -56,6 +56,11 @@ export default new Router({
       path:'/orderadd',
       name: 'orderadd',
       component: () => import('./views/OrderAdd.vue')
+    },
+    {
+      path:'/me',
+      name: 'me',
+      component: () => import('./views/Me.vue')
     },
   ]
 })

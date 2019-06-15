@@ -6,16 +6,16 @@
         </div>
         <div class="action">
             <el-row type="flex">
-                <el-col :span="8">
-                    <i class="icon xuzhu"></i>
+                <el-col :span="8" >
+                    <i class="icon xuzhu" @click="changeClick(1)"></i>
                     <div>续住</div>
                 </el-col>
-                <el-col :span="8">
-                    <i class="icon yanshi"></i>
+                <el-col :span="8" >
+                    <i class="icon yanshi" @click="changeClick(2)"></i>
                     <div>延时</div>
                 </el-col>
-                <el-col :span="8">
-                    <i class="icon tuifang"></i>
+                <el-col :span="8" >
+                    <i class="icon tuifang" @click="changeClick(3)"></i>
                     <div>退房</div>
                 </el-col>
             </el-row>
@@ -59,6 +59,22 @@
         methods: {
             handleClose() {
                 this.message=!this.message;
+            },
+            changeClick(index){
+                switch (index) {
+                    case 1:
+                        this.$router.push({ path:'/order',query: {type: 1}});
+                        break;
+                    case 2:
+                        this.$router.push({ path:'/order',query: {type: 2}});
+                        break;
+                    case 3:
+                        this.$router.push({ path:'/order',query: {type: 3}});
+                        break;
+                    default:
+                        break;
+
+                }
             }
         }
     }

@@ -11,7 +11,7 @@
 
             </el-col>
             <el-col :span="8">
-                <router-link to="/">
+                <router-link to="/orderadd">
                     <div class="grid-content bg-purple-dark icon-box">
                         <img src="../assets/img/order.png" alt=""/>
                     </div>
@@ -20,7 +20,7 @@
 
             </el-col>
             <el-col :span="8">
-                <router-link to="/">
+                <router-link to="/me">
                     <div class="grid-content bg-purple-dark icon-box">
                         <img src="../assets/img/personal.png" alt=""/>
                     </div>

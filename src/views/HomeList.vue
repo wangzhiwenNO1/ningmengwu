@@ -11,10 +11,18 @@
     import HomeBody from '@/components/HomeList/HomeBody.vue'
 
     export default {
-        name: 'home',
+        name: 'Homelist',
         components: {
             HomeTop,
-            HomeBody
+            HomeBody,
+        },
+        data(){
+            return {
+                part:1
+            }
+        },
+        created() {
+
         }
     }
 </script>

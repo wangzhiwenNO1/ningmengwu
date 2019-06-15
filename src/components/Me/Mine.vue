@@ -6,28 +6,28 @@
         </div>
         <div class="card">
             <ul>
-                <li>
+                <li @click="jump(1)">
                     <el-row>
                         <el-col :span="2"><i class="icon icon-ding"></i></el-col>
                         <el-col :span="21">我的订单</el-col>
                         <el-col :span="1"><i class="icon arrow"></i></el-col>
                     </el-row>
                 </li>
-                <li>
+                <li @click="jump(2)">
                     <el-row>
                         <el-col :span="2"><i class="icon icon-xiao"></i></el-col>
                         <el-col :span="21">我的消息</el-col>
                         <el-col :span="1"><i class="icon arrow"></i></el-col>
                     </el-row>
                 </li>
-                <li>
+                <li @click="jump(3)">
                     <el-row>
                         <el-col :span="2"><i class="icon icon-fa"></i></el-col>
                         <el-col :span="21">发票助手</el-col>
                         <el-col :span="1"><i class="icon arrow"></i></el-col>
                     </el-row>
                 </li>
-                <li>
+                <li @click="jump(4)">
                     <el-row>
                         <el-col :span="2"><i class="icon icon-ke"></i></el-col>
                         <el-col :span="21">联系我们</el-col>
@@ -45,6 +45,27 @@
     export default {
         name: 'Mine',
         components: {
+        },
+        methods:{
+            jump(index){
+                switch (index) {
+                    case 1:
+                        this.$router.push({ path:'/indent'});
+                        break;
+                    case 2:
+                        this.$router.push({ path:'/information'});
+                        break;
+                    case 3:
+                        this.$router.push({ path:'/invoice'});
+                        break;
+                    case 4:
+                        // this.$router.push({ path:'/orderadd'});
+                        break;
+                    default:
+                        break;
+                }
+
+            }
         }
     }
 </script>
