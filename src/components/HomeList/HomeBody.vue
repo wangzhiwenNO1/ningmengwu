@@ -2,8 +2,8 @@
     <div class="home-body">
         <div class="banner">
             <el-carousel height="175px" arrow="hover" :autoplay="true">
-                <el-carousel-item v-for="item in 4" :key="item">
-                    <img src="../../assets/img/4.jpg" alt=""/>
+                <el-carousel-item v-for="(item,index) in bannerList" :key="index">
+                    <img :src="item" alt=""/>
                 </el-carousel-item>
             </el-carousel>
         </div>
@@ -49,20 +49,35 @@
 
 <script>
     // @ is an alias to /src
+    import {mapActions} from 'vuex'
 
     export default {
         name: 'HomeListBody',
         data () {
             return {
-
+                bannerList:[],
+                floor:"",
             }
         },
         computed: {
 
         },
+        created(){
+            this.getBanner();
+        },
         methods: {
+            ...mapActions(['submitForm']),
             jump(){
-                this.$router.push({ path:'/orderadd'})
+                this.$router.push({ path:'/orderadd'});
+            },
+            getBanner(){
+                this.submitForm({ url:"room/banner",data:{hotel_id:"1"}, callback:(data)=>{
+                    console.log(data);
+                    if(data.error==0){
+                        this.floor=data.floor;
+                        this.bannerList=data.imgs;
+                    }
+                }})
             }
         }
     }
