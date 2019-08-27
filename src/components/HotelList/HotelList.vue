@@ -14,15 +14,15 @@
                 </el-col>
             </el-row>
         </div>
-        <ul class="hotellist">
-            <li v-for="(item,index) in hotelList" :key="index" @click="changeClick">
+        <ul class="hotellist infinite-list" v-infinite-scroll="load" infinite-scroll-disabled="disabled" style="overflow:auto">
+            <li class="infinite-list-item" v-for="(item,index) in hotelList" :key="index" @click="changeClick">
                 <el-row :gutter="20" :data-id="item.id">
                     <el-col :span="5">
                         <div class="picture"><img :src="item.img" alt=""/></div>
                     </el-col>
                     <el-col :span="14">
                         <div>
-                            <h4>郑州云土酒店</h4>
+                            <h4>{{item.name}}</h4>
                             <p class="site">距离您4.2km</p>
                             <div class="housType">
                                 <span v-for="(room,ide) in item.room_name" :key="ide">
@@ -38,6 +38,8 @@
                 </el-row>
             </li>
         </ul>
+        <p v-if="loading">加载中...</p>
+        <p v-if="noMore">没有更多了</p>
     </div>
 </template>
 
@@ -52,6 +54,16 @@
                 input2: '',
                 current_page:"",
                 hotelList:[],
+                count:'',
+                loading:false,
+            }
+        },
+        computed: {
+            noMore () {
+                return this.count >= 20
+            },
+            disabled () {
+                return this.loading || this.noMore
             }
         },
         created() {
@@ -72,6 +84,9 @@
                         }
                     }
                 })
+            },
+            load () {
+                console.log(this.hotelList);
             }
         }
     }
