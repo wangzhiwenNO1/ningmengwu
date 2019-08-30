@@ -26,6 +26,7 @@
 
 <script>
     // @ is an alias to /src
+    import {mapActions} from 'vuex'
 
     export default {
         name: 'UnIndent',
@@ -37,7 +38,19 @@
 
             };
         },
+        created(){
+            console.log(123);
+            this.submitForm({
+                url: "order/lists", data: {status: 2}, callback: (data) => {
+                    console.log("order/lists",data);
+                    if (data.error == 0) {
+
+                    }
+                }
+            })
+        },
         methods:{
+            ...mapActions(['submitForm']),
 
         }
     }

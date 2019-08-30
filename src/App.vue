@@ -13,6 +13,9 @@ export default {
   name: 'app',
   components: {
     Tabbars
+  },
+  created() {
+
   }
 }
 </script>

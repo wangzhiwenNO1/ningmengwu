@@ -171,7 +171,7 @@
             padding: 7px;
             display: flex;
             flex-wrap: wrap;
-            max-height:250px;
+            max-height:275px;
             overflow-y: auto;
             justify-content: space-between;
             /*&::-webkit-scrollbar {display:none}*/

@@ -6,16 +6,16 @@
         <div class="main">
             <div class="title">前台系统</div>
             <div class="formBox">
-                <div>
-                    <label>账号:</label>
-                    <Input v-model="name" />
+                <div class="flexBox">
+                    <label class="account ">账号:</label>
+                    <Input class="inp" v-model="name" />
+                </div>
+                <div class="flexBox">
+                    <label class="account " >密码:</label>
+                    <Input class="inp" v-model="password" />
                 </div>
                 <div>
-                    <label>密码:</label>
-                    <Input v-model="password" />
-                </div>
-                <div>
-                    <Button>Default</Button>
+                    <Button class="sumbit">登录</Button>
                 </div>
             </div>
 
@@ -56,6 +56,34 @@
         font-size:1.2rem;
     }
     .formBox{
-
+        width:80%;
+        background:white;
+        margin:0 auto;
+        border-radius: 1rem;
+    }
+    .flexBox{
+        display:flex;
+        align-items: center;
+        padding:1rem 0;
+        color:black;
+    }
+    .account {
+        width:4rem;
+    }
+    .inp{
+        width:70%;
+    }
+    .sumbit{
+        width:50%;
+        margin:0 auto 1rem;
+        background:#F0D19A;
+        box-shadow: none;
+        color: white;
+        border:none;
+    }
+    .ivu-btn:focus{
+        box-shadow: none;
+        color: white;
+        border:none;
     }
 </style>
