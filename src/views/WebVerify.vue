@@ -1,29 +1,21 @@
 <template>
     <div class="indent">
+        <Modal v-model="modal6" :loading="loadModu" @on-ok="asyncOK">
+            <p>房间信息上传？</p>
+        </Modal>
         <ul class="infinite-list" v-infinite-scroll="load" >
             <li v-for="(item,index) in dataList" class="infinite-list-item infoBox">
-                <div class="title">
-                    <h3>{{item.hotel_name}}<i class="icon"></i></h3>
-                    <p>待支付</p>
-                </div>
-                <el-row>
-                    <el-col :span="5">
-                        <div class="imgBox"><img :src="item.img" alt=""></div>
-                    </el-col>
-                    <el-col :span="19" class="info">
-                        <h3>{{item.number}}房间</h3>
-                        <ul>
-                            <li><span>订单编号：</span>{{item.id+100000}}</li>
-                            <li><span>创建时间：</span>{{item.create_time}}</li>
-                            <li><span>入住时间：</span>{{item.begin_date}}</li>
-                            <li><span>离店时间：</span>{{item.end_date}}</li>
-                            <li><span>支付费用：</span>{{item.total}} (房费{{item.cost}} 押金:{{item.deposit}}元)</li>
-                        </ul>
-                    </el-col>
-                </el-row>
+                <h3>{{item.number}}房间</h3>
+                <ul>
+                    <li><span>订单编号：</span>{{item.id+100000}}</li>
+                    <li><span>创建时间：</span>{{item.create_time}}</li>
+                    <li><span>入住时间：</span>{{item.begin_date}}</li>
+                    <li><span>离店时间：</span>{{item.end_date}}</li>
+                    <li><span>支付费用：</span>{{item.total}} (房费{{item.cost}} 押金:{{item.deposit}}元)</li>
+                </ul>
+
                 <div class="btnRow">
-                    <el-button class="add" @click="continues(item.id)">继续支付</el-button>
-                    <el-button class="cancel">取消</el-button>
+                    <el-button class="add" @click="changeVerify">核实身份信息</el-button>
                 </div>
             </li>
         </ul>
@@ -53,7 +45,9 @@
                 loading: false,
                 current_page:"",
                 last_page:"",
-                spinShow:false
+                spinShow:false,
+                modal6: false,
+                loadModu: true
             };
         },
         created() {
@@ -72,12 +66,12 @@
 
             getList() {
                 this.submitForm({
-                    url: "order/lists", data: {status: 0,page:this.current_page}, callback: (data) => {
-                        console.log("order/lists", data.data);
+                    url: "operate/lists", data: {page:this.current_page}, callback: (data) => {
+                        console.log("operate/lists", data.data);
                         if (data.error == 0) {
-                            data.data.data.forEach((item) => {
-                                item.create_time = this.formatTime(item.create_time * 1000, 'Y-M-D h:m:s')
-                            });
+                            // data.data.data.forEach((item) => {
+                            //     item.create_time = this.formatTime(item.create_time * 1000, 'Y-M-D h:m:s')
+                            // });
                             if(data.data.current_page==1){
                                 this.dataList = data.data.data;
                             }else{
@@ -109,7 +103,13 @@
                     },200)
                 }
             },
-            continues() {
+            asyncOK () {
+                setTimeout(() => {
+                    this.modal6 = false;
+                }, 2000);
+            },
+            changeVerify(){
+                this.modal6 = true;
 
             },
             // 格式化日期，如月、日、时、分、秒保证为2位数
@@ -155,7 +155,10 @@
     .indent {
         text-align: left;
 
-        height: calc(100vh - 100px) ;
+        height: 100vh ;
+        position: fixed;
+        z-index: 999;
+        width: 100%;
 
         .infinite-list {
             height: 100%;
@@ -179,7 +182,7 @@
                 .icon {
                     width: 9px;
                     height: 12px;
-                    background: url("../../assets/img/more.png") no-repeat;
+                    /*background: url("../../assets/img/more.png") no-repeat;*/
                     background-size: cover;
                     margin-left: 5px;
                 }

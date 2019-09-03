@@ -14,9 +14,11 @@
                     <label class="account " >密码:</label>
                     <Input class="inp" v-model="password" />
                 </div>
+                <Alert type="error" class="prompt" v-if="isLogin">账号或密码错误</Alert>
                 <div>
-                    <Button class="sumbit">登录</Button>
+                    <Button class="sumbit" @click="login">登录</Button>
                 </div>
+
             </div>
 
         </div>
@@ -25,22 +27,48 @@
 
 </template>
 <script>
+    import {mapActions} from 'vuex'
     export default {
         data () {
             return {
-                password: '',
-                name:''
-
+                password: '123456',
+                name:'ceshiqiantai',
+                isLogin:false
+            }
+        },
+        methods:{
+            ...mapActions(['submitForm']),
+            login(){
+                this.submitForm({
+                    url: "login/signin", data: {username:this.name,password:this.password}, callback: (data) => {
+                        console.log("login",data);
+                        if (data.error == 0) {
+                            this.$Message.success('登录成功');
+                            this.$router.push({ path:'/webverify'});
+                        }else{
+                            this.isLogin=true;
+                        }
+                    }
+                })
             }
         }
     }
 </script>
 <style lang="less" scoped>
+    .prompt{
+        width:80%;
+        margin:0 auto 0.5rem;
+        padding:8px;
+    }
     .mainBox{
         font-family: "微软雅黑";
         background: #323232;
         color:white;
-        height:calc(100vh - 50px) ;
+        height:100vh ;
+        width:100%;
+        position: absolute;
+        top:0;
+        z-index: 999;
     }
     .viewTop{
         width:100%;

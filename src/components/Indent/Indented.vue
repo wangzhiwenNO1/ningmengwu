@@ -1,5 +1,28 @@
 <template>
     <div class="indent">
+        <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+            <li v-for="i in count" class="infinite-list-item infoBox">
+                <div class="title">
+                    <h3>鹏程国家大酒店<i class="icon"></i></h3>
+                    <p>已完成</p>
+                </div>
+                <el-row>
+                    <el-col :span="5">
+                        <div class="imgBox"><img src="../../assets/img/4.jpg" alt=""></div>
+                    </el-col>
+                    <el-col :span="19" class="info">
+                        <h3>202房间</h3>
+                        <ul>
+                            <li><span>订单编号：</span>54984657987</li>
+                            <li><span>创建时间：</span>2019-05-24 12:30:09</li>
+                            <li><span>入住时间：</span>2019-05-24</li>
+                            <li><span>离店时间：</span>2019-05-24</li>
+                            <li><span>支付费用：</span>0.02 (房费0.01 押金:0.01元)</li>
+                        </ul>
+                    </el-col>
+                </el-row>
+            </li>
+        </ul>
         <div class="infoBox" v-for="(item,index) in 3" :key="index">
             <div class="title">
                 <h3>鹏程国家大酒店<i class="icon"></i></h3>
@@ -34,18 +57,24 @@
         },
         data() {
             return {
-
+                count: 0
             };
         },
         methods:{
-
+            load () {
+                this.count += 2
+            }
         }
     }
 </script>
 <style lang="less" scoped>
+    .infinite-list{
+        height: calc(100vh - 100px) ;
+    }
     .indent{
         text-align: left;
         padding:0 15px;
+
         .infoBox{
             padding:14px;
             background:rgba(255,255,255,1);

@@ -6,7 +6,10 @@ import qs from 'qs';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    state: {},
+    state: {
+        username:"",
+        password:""
+    },
     mutations: {},
     actions: {
         submitForm({commit},{url,data, callback}) {
