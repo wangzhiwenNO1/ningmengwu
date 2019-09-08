@@ -1,157 +1,48 @@
 <template>
-    <div class="orderAdd">
-        <Time @timeIn="changeTimeIn" @timeOut="changeTimeOut"></Time>
-        <div class="infoBox">
-            <div class="title">
-                <div :class="isReserve==1?'reserve action':'reserve'" @click="changeReserve(1)">自助</div>
-                <div :class="isReserve==1?'reserve':'reserve action'" @click="changeReserve(2)">代订</div>
+    <el-row type="flex" class="checkIn">
+        <el-col :span="10">
+            <div class="status">入住</div>
+            <div class="date-time-item">
+                <div class="date-time-input" @click="show(1)">
+                    <div class="time">{{inDate}}<span class="week">{{inWeek}}</span></div>
+                </div>
+                <date-time ref="dateTimeIn" :min="time" type="date" @confirm="changeIn"></date-time>
             </div>
 
-            <h4>入住人信息<span>至少选择一人</span></h4>
-
-            <div class="personBox">
-                <el-row class="personInfo">
-                    <el-col :span="6">
-                        <label>姓名</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <div>
-                            <input type="text" v-model="zhuName">
-                        </div>
-                    </el-col>
-                </el-row>
-                <el-row class="personInfo">
-                    <el-col :span="6">
-                        <label>手机号码</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <div>
-                            <input type="text" v-model="zhuTel">
-                        </div>
-                    </el-col>
-                </el-row>
-                <el-row class="personInfo" v-if="isReserve==1">
-                    <el-col :span="6">
-                        <label>身份证</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <div>
-                            <input type="text" v-model="zhuIdCard">
-                        </div>
-                    </el-col>
-                </el-row>
-                <div class="person" v-for="(item,index) in userArr" :key="index">
-                    <el-row class="personInfo">
-                        <el-col :span="6">
-                            <label>姓名</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <div>
-                                <input type="text" v-model="item.name">
-                            </div>
-                        </el-col>
-                    </el-row>
-                    <el-row class="personInfo">
-                        <el-col :span="6">
-                            <label>手机号码</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <div>
-                                <input type="text" v-model="item.tel">
-                            </div>
-                        </el-col>
-                    </el-row>
-                    <el-row class="personInfo" v-if="isReserve==1">
-                        <el-col :span="6">
-                            <label>身份证</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <div>
-                                <input type="text" v-model="zhuIdCard">
-                            </div>
-                        </el-col>
-                    </el-row>
-                </div>
-                <div class="addBox">
-                    <el-button v-if="userArr.length<=1" class="addPerson" @click="addUser">添加新房客</el-button>
-                    <el-button v-if="userArr.length>0" class="addPerson" @click="delUser">删除新房客</el-button>
-                </div>
+        </el-col>
+        <el-col :span="4" class="dayBox"><p class="dayNum">3晚</p></el-col>
+        <el-col :span="10">
+            <div class="status">离店</div>
+            <div class="date-time-input" @click="show(2)">
+                <div class="time">{{outDate}}<span class="week">{{outWeek}}</span></div>
             </div>
-
-            <h4>费用<span> 2人3晚</span></h4>
-            <div class="info">
-                <div class="infoItem">
-                    <div class="name">房费</div>
-                    <i class="xian"></i>
-                    <div class="information">均¥320*1间*3晚</div>
-                </div>
-                <div class="infoItem">
-                    <div class="name">押金</div>
-                    <i class="xian"></i>
-                    <div class="information">无(续住房只需续交房费即可)</div>
-                </div>
-                <div class="infoItem">
-                    <div class="name">合计</div>
-                    <i class="xian"></i>
-                    <div class="information">¥320</div>
-                </div>
-            </div>
-            <div class="explain">
-                <div class="inform">订房须知：</div>
-                <div class="text">请在提交订单后15分钟内完成支付 延时每小时20元，半小时内免费</div>
-            </div>
-            <div class="btnRow">
-                <el-button class="add" @click="addPay">立即支付</el-button>
-                <el-button class="cancel">取消</el-button>
-            </div>
-        </div>
-        <div class="bgPay" v-if="false">
-            <!-- v-if="pay"-->
-            <div class="payBox">
-                <div class="warning">根据公安机关要求，为避免给您带来麻烦，请 如实填写入住人数及入住人员信息</div>
-                <div class="btnRow">
-                    <el-button class="add" @click="ensure">确定</el-button>
-                </div>
-            </div>
-
-        </div>
-    </div>
+            <date-time ref="dateTimeOut" type="date" :min="time" @confirm="changeOut"></date-time>
+        </el-col>
+    </el-row>
 </template>
 
 <script>
     // @ is an alias to /src
     import DateTime from 'vue-date-time-m'
-    import Time from '../Time.vue'
     import qs from 'qs'
     import {mapActions} from 'vuex'
 
     export default {
-        name: 'XuZhu',
+        name: 'Time',
         components: {
-            DateTime,
-            Time
+            DateTime
         },
         data() {
             return {
-                pay: true,
                 inDate: '',//入店日期
                 outDate: '',//离店日期
                 inWeek: '',//入店星期
                 outWeek: "",//离店星期
                 time: "",//当前时间
-                isReserve: 1,//是否自己住
-                userArr: [],//添加用户
                 minTime: "",//当前时间
-                zhuName: "张三",//名字
-                zhuTel: "1215456456",//电话
-                zhuIdCard: "4564213245465",//主住的身份证
-                roomId: "",//房间id
             };
         },
         created() {
-            this.roomId = this.$route.params.id;
-            this.minTime = this.$route.params.minTime;
-            console.log(this.roomId);
 
             let times = new Date();
             this.changeWeek(times);
@@ -165,12 +56,6 @@
         },
         methods: {
             ...mapActions(['submitForm']),
-            changeTimeIn(e){
-                console.log(e);
-            },
-            changeTimeOut(e){
-                console.log(e);
-            },
             addPay() {
                 if (this.zhuName != "" && this.zhuTel != "") {
                     if (this.isReserve == 1 && this.zhuIdCard != "") {
@@ -191,7 +76,7 @@
                         };
 
                         this.submitForm({
-                            url: "order/add", 
+                            url: "order/add",
                             data: data,
                             callback: (data) => {
                                 console.log("userAdd",data);
@@ -220,9 +105,7 @@
                 }
 
             },
-            ensure() {
-                this.pay = false;
-            },
+
             show(e) {
                 if(e==1){
                     this.$refs.dateTimeIn.show()
@@ -235,10 +118,12 @@
             changeIn(val) {
                 let arr = val.toString().split("/");
                 this.inDate = arr[1] + "月" + arr[2] + "日";
+                this.$emit("timeIn",this.inDate)
             },
             changeOut(val) {
                 let arr = val.toString().split("/");
                 this.outDate = arr[1] + "月" + arr[2] + "日";
+                this.$emit("timeOut",this.outDate)
             },
             changeWeek(times) {
                 let time = times;
@@ -249,15 +134,6 @@
 
                 time.setTime(time.getTime() + 24 * 60 * 60 * 1000);
                 this.outWeek = "周" + "日一二三四五六".charAt(time.getDay());
-            },
-            addUser() {
-                this.userArr.push({name: "李四", tel: "5125465456"});
-            },
-            delUser() {
-                this.userArr.pop();
-            },
-            changeReserve(e) {
-                this.isReserve = e;
             },
         }
     }
