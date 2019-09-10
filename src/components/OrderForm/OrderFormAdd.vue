@@ -151,7 +151,6 @@
         created() {
             this.roomId = this.$route.params.id;
             this.minTime = this.$route.params.minTime;
-            console.log(this.roomId);
 
             let times = new Date();
             this.changeWeek(times);
@@ -166,10 +165,10 @@
         methods: {
             ...mapActions(['submitForm']),
             changeTimeIn(e){
-                console.log(e);
+                this.inDate=e;
             },
             changeTimeOut(e){
-                console.log(e);
+                this.outDate=e;
             },
             addPay() {
                 if (this.zhuName != "" && this.zhuTel != "") {
@@ -279,7 +278,8 @@
     }
 
     .orderAdd {
-        margin-top: 13px;
+        padding-top: 1rem;
+        background:#eee;
 
         .time {
             color: #333333;
@@ -333,6 +333,9 @@
             .personBox {
                 padding: 10px;
                 background: rgba(251, 251, 251, 1);
+                .person{
+                    padding:1rem 0;
+                }
 
                 .personInfo {
                     display: flex;

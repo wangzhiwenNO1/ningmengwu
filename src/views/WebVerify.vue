@@ -1,10 +1,17 @@
 <template>
     <div class="indent">
-        <Modal v-model="modal6" :loading="loadModu" @on-ok="asyncOK">
-            <p>房间信息上传？</p>
-        </Modal>
+        <div class="modalBox" v-if="isShow">
+            <div class="modal">
+                <h4>提示</h4>
+                <div class="text">是否上传房间信息</div>
+                <div class="btnRow">
+                    <Button @click="uploadInfo(1)">确定</Button>
+                    <Button @click="uploadInfo(2)">取消</Button>
+                </div>
+            </div>
+        </div>
         <ul class="infinite-list" v-infinite-scroll="load" >
-            <li v-for="(item,index) in dataList" class="infinite-list-item infoBox">
+            <li v-for="(item,index) in dataList" class="infinite-list-item infoBox" :key="index">
                 <h3>{{item.number}}房间</h3>
                 <ul>
                     <li><span>订单编号：</span>{{item.id+100000}}</li>
@@ -13,16 +20,11 @@
                     <li><span>离店时间：</span>{{item.end_date}}</li>
                     <li><span>支付费用：</span>{{item.total}} (房费{{item.cost}} 押金:{{item.deposit}}元)</li>
                 </ul>
-
                 <div class="btnRow">
-                    <el-button class="add" @click="changeVerify">核实身份信息</el-button>
+                    <el-button class="add" @click="changeVerify(item.id)">核实身份信息</el-button>
                 </div>
             </li>
         </ul>
-        <Spin fix v-if="spinShow">
-            <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-            <div>Loading</div>
-        </Spin>
         <p v-if="loading">加载中...</p>
         <p v-if="noMore">没有更多了</p>
     </div>
@@ -34,20 +36,19 @@
     // @ is an alias to /src
     import {mapActions} from 'vuex'
 
-
     export default {
         name: 'UnIndent',
         components: {},
         data() {
             return {
-                dataList: "",
-                count: 10,
-                loading: false,
-                current_page:"",
-                last_page:"",
-                spinShow:false,
-                modal6: false,
-                loadModu: true
+                dataList: [],//数据
+                count: 10,//数据条数
+                loading: false,//load
+                current_page:"",//当前页数
+                last_page:"",//最大页数
+                loadModu: true,
+                isShow:false,//提交信息遮罩
+                order_id:"",//房间id
             };
         },
         created() {
@@ -63,7 +64,6 @@
         },
         methods: {
             ...mapActions(['submitForm']),
-
             getList() {
                 this.submitForm({
                     url: "operate/lists", data: {page:this.current_page}, callback: (data) => {
@@ -79,7 +79,6 @@
                                     this.dataList.push(i);
                                 })
                             }
-
                             this.current_page=data.data.current_page;
                             this.last_page=data.data.last_page;
                         }
@@ -88,29 +87,33 @@
             },
             load() {
                 this.loading = true;
-                this.spinShow=true;
                 if(this.current_page==this.last_page){
                     this.loading = false;
-                    setTimeout(()=>{
-                        this.spinShow=false;
-                    },200)
 
                 }else{
                     this.current_page++;
                     this.getList();
-                    setTimeout(()=>{
-                        this.spinShow=false;
-                    },200)
                 }
             },
-            asyncOK () {
-                setTimeout(() => {
-                    this.modal6 = false;
-                }, 2000);
-            },
-            changeVerify(){
-                this.modal6 = true;
 
+            changeVerify(e){
+                this.isShow=true;
+                this.order_id=e;
+            },
+            uploadInfo(e){
+                if(e==1){
+                    this.submitForm({
+                        url: "operate/checkin", data: {order_id:this.order_id}, callback: (data) => {
+                            console.log("operate/checkin", data.data);
+                            if (data.error == 0) {
+                                this.$Message.success(data.data);
+                                this.isShow=false;
+                            }
+                        }
+                    })
+                }else{
+                    this.isShow=false;
+                }
             },
             // 格式化日期，如月、日、时、分、秒保证为2位数
             formatNumber(n) {
@@ -151,6 +154,37 @@
         height: 100px;
         position: relative;
         border: 1px solid #eee;
+    }
+    .modalBox{
+        position:fixed;
+        width:100%;
+        height:100vh;
+        background:rgba(0,0,0,.2);
+        display:flex;
+        align-items: center;
+
+        .modal{
+            width:80%;
+            height:10rem;
+            background:white;
+            margin:auto;
+            border-radius: 1rem;
+            text-align: center;
+
+            h4{
+                color:#d5b074;
+                border-bottom: 1px solid #eeeeee;
+                padding:0.6rem;
+            }
+            .text{
+                height:3rem;
+                line-height: 3rem;
+            }
+            .btnRow{
+                display:flex;
+                justify-content: space-around;
+            }
+        }
     }
     .indent {
         text-align: left;

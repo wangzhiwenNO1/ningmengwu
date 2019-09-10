@@ -16,7 +16,7 @@
             <div class="date-time-input" @click="show(2)">
                 <div class="time">{{outDate}}<span class="week">{{outWeek}}</span></div>
             </div>
-            <date-time ref="dateTimeOut" type="date" :min="time" @confirm="changeOut"></date-time>
+            <date-time ref="dateTimeOut" type="date" :min="outTime==''?time:outTime" @confirm="changeOut"></date-time>
         </el-col>
     </el-row>
 </template>
@@ -40,6 +40,9 @@
                 outWeek: "",//离店星期
                 time: "",//当前时间
                 minTime: "",//当前时间
+                outTime:"",//选择入住日期后的离店日期的最小时间
+                initDateIn:"",//初始选择入店时间
+                initDateOut:"",//初始选择离店时间
             };
         },
         created() {
@@ -116,25 +119,34 @@
             },
             // 日期组件回调
             changeIn(val) {
+                this.initDateIn=val;
                 let arr = val.toString().split("/");
                 this.inDate = arr[1] + "月" + arr[2] + "日";
+                arr[2]=parseInt(arr[2])+1;
+                this.outTime=arr.join("/");
+                this.calculation(val,this.initDateOut);
                 this.$emit("timeIn",this.inDate)
             },
             changeOut(val) {
+                this.initDateOut=val;
                 let arr = val.toString().split("/");
                 this.outDate = arr[1] + "月" + arr[2] + "日";
+                this.calculation(this.initDateIn,val);
                 this.$emit("timeOut",this.outDate)
             },
-            changeWeek(times) {
+            changeWeek(times) {//修改星期
                 let time = times;
-                this.inDate = "0"+(time.getMonth() + 1 )+ "月" + "0"+time.getDate() + "日";
-                this.outDate ="0"+ (time.getMonth() + 1 )+ "月" + "0"+(time.getDate() + 1 + "日");
+                this.inDate = "0"+(time.getMonth() + 1 )+ "月" +time.getDate() + "日";
+                this.outDate ="0"+ (time.getMonth() + 1 )+ "月" +(time.getDate() + 1 + "日");
                 let day = time.getDay();
                 this.inWeek = "周" + "日一二三四五六".charAt(day);
 
                 time.setTime(time.getTime() + 24 * 60 * 60 * 1000);
                 this.outWeek = "周" + "日一二三四五六".charAt(time.getDay());
             },
+            calculation(inDate,outDate){
+                console.log(inDate,outDate);
+            }
         }
     }
 </script>
