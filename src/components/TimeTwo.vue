@@ -1,35 +1,39 @@
 <template>
-    <el-row type="flex" class="checkIn">
-        <el-col :span="10">
-            <div class="status">入住</div>
-            <div class="date-time-item">
-                <div class="date-time-input" @click="show(1)">
-                    <div class="time">{{inDate}}<span class="week">{{inWeek}}</span></div>
-                </div>
-                <date-time ref="dateTimeIn" :min="time" type="date" @confirm="changeIn"></date-time>
-            </div>
-        </el-col>
-        <el-col :span="4" class="dayBox"><p class="dayNum">3晚</p></el-col>
-        <el-col :span="10">
-            <div class="status">离店</div>
-            <div class="date-time-input" @click="show(2)">
-                <div class="time">{{outDate}}<span class="week">{{outWeek}}</span></div>
-            </div>
-            <date-time ref="dateTimeOut" type="date" :min="outTime==''?time:outTime" @confirm="changeOut"></date-time>
-        </el-col>
-    </el-row>
+    <div class="timeBox">
+        <div>
+            <el-row type="flex" class="checkIn">
+                <el-col :span="10">
+                    <div class="status">入住</div>
+                    <div class="date-time-item">
+                        <div class="date-time-input" >
+                            <div class="time">{{inDate}}<span class="week">{{inWeek}}</span></div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col :span="4" class="dayBox"><p class="dayNum">3晚</p></el-col>
+                <el-col :span="10">
+                    <div class="status">离店</div>
+                    <div class="date-time-input">
+                        <div class="time">{{outDate}}<span class="week">{{outWeek}}</span></div>
+                    </div>
+
+                </el-col>
+            </el-row>
+        </div>
+        <VueHotelDatepicker :weekList="weekList" :monthList="monthList"></VueHotelDatepicker>
+    </div>
 </template>
 
 <script>
     // @ is an alias to /src
-    import DateTime from 'vue-date-time-m'
-    import qs from 'qs'
+    import VueHotelDatepicker from '@northwalker/vue-hotel-datepicker'
+    import '../assets/css/hotel-datepicker.css'
     import {mapActions} from 'vuex'
 
     export default {
         name: 'Time',
         components: {
-            DateTime
+            VueHotelDatepicker
         },
         data() {
             return {
@@ -41,115 +45,29 @@
                 minTime: "",//当前时间
                 outTime:"",//选择入住日期后的离店日期的最小时间
                 initDateIn:"",//初始选择入店时间
-                initDateOut:"",//初始选择离店时间
+                initDateOut:"",//初始选择离店时间，
+                weekList:['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                monthList:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
             };
         },
         created() {
 
-            let times = new Date();
-            this.changeWeek(times);
+        },
+        mounted(){
 
-            if (this.minTime > 24) {
-                times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
-            } else {
-                times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
-            }
-            this.time = times.toLocaleDateString();
         },
         methods: {
             ...mapActions(['submitForm']),
-            addPay() {
-                if (this.zhuName != "" && this.zhuTel != "") {
-                    if (this.isReserve == 1 && this.zhuIdCard != "") {
-                        // this.$router.push({path: 'homelist', params: {type: 2}});
-                        let time=new Date();
-                        let begin_date=time.getFullYear()+"-"+this.inDate.split("月")[0]+"-"+this.inDate.split("月")[1].split("日")[0];
-                        let end_date=time.getFullYear()+"-"+this.outDate.split("月")[0]+"-"+this.outDate.split("月")[1].split("日")[0];
 
-                        let data={
-                            room_id: this.roomId,
-                            begin_date:begin_date,
-                            end_date:end_date,
-                            name:this.zhuName,
-                            mobile:this.zhuTel,
-                            idcard:this.zhuIdCard,
-                            more:this.userArr,
-                            type:this.isReserve
-                        };
-
-                        this.submitForm({
-                            url: "order/add",
-                            data: data,
-                            callback: (data) => {
-                                console.log("userAdd",data);
-                                if (data.error == 0) {
-
-                                }else{
-                                    this.$Message.info(data.message);
-                                }
-                            }
-                        })
-
-                    }else if(this.isReserve==2){
-                        // this.$router.push({path: 'homelist', params: {type: 2}});
-                        this.$Message.info('请填写完整信息');
-                    }
-
-                    if (this.userArr.length > 0) {
-                        let isNull = false;
-                        this.userArr.forEach((item) => {
-                            if (item.name == "" || item.tel == "") {
-                            }
-                        })
-                    }
-                } else {
-                    this.$Message.info('请填写完整信息');
-                }
-
-            },
-
-            show(e) {
-                if(e==1){
-                    this.$refs.dateTimeIn.show()
-                }else{
-                    this.$refs.dateTimeOut.show()
-                }
-
-            },
-            // 日期组件回调
-            changeIn(val) {
-                this.initDateIn=val;
-                let arr = val.toString().split("/");
-                this.inDate = arr[1] + "月" + arr[2] + "日";
-                arr[2]=parseInt(arr[2])+1;
-                this.outTime=arr.join("/");
-                this.calculation(val,this.initDateOut);
-                this.$emit("timeIn",this.inDate)
-            },
-            changeOut(val) {
-                this.initDateOut=val;
-                let arr = val.toString().split("/");
-                this.outDate = arr[1] + "月" + arr[2] + "日";
-                this.calculation(this.initDateIn,val);
-                this.$emit("timeOut",this.outDate)
-            },
-            changeWeek(times) {//修改星期
-                let time = times;
-                this.inDate = "0"+(time.getMonth() + 1 )+ "月" +time.getDate() + "日";
-                this.outDate ="0"+ (time.getMonth() + 1 )+ "月" +(time.getDate() + 1 + "日");
-                let day = time.getDay();
-                this.inWeek = "周" + "日一二三四五六".charAt(day);
-
-                time.setTime(time.getTime() + 24 * 60 * 60 * 1000);
-                this.outWeek = "周" + "日一二三四五六".charAt(time.getDay());
-            },
-            calculation(inDate,outDate){
-                console.log(inDate,outDate);
-            }
         }
     }
 </script>
 <style lang="less" scoped>
+    .timeBox{
+        width:370px;
+        height: 80px;
+        background:pink;
+    }
     .checkIn {
         background: white;
         height: 79px;

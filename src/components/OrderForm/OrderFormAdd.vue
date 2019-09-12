@@ -1,5 +1,6 @@
 <template>
     <div class="orderAdd">
+        <TimeTwo style="height: 80px;"></TimeTwo>
         <Time @timeIn="changeTimeIn" @timeOut="changeTimeOut"></Time>
         <div class="infoBox">
             <div class="title">
@@ -120,16 +121,16 @@
 
 <script>
     // @ is an alias to /src
-    import DateTime from 'vue-date-time-m'
+
     import Time from '../Time.vue'
-    import qs from 'qs'
+    import TimeTwo from '../TimeTwo.vue'
     import {mapActions} from 'vuex'
 
     export default {
         name: 'XuZhu',
         components: {
-            DateTime,
-            Time
+            Time,
+            TimeTwo
         },
         data() {
             return {
