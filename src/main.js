@@ -6,7 +6,12 @@ import './plugins/element.js'
 import axios from 'axios';
 import './plugins/iview.js'
 import qs from 'qs'
-import dateTime from 'vue-date-time-m';
+import dateTime from 'vue-date-time-m'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+
+import 'swiper/dist/css/swiper.css'
+
+Vue.use(VueAwesomeSwiper, /* { default global options } */)
 
 
 

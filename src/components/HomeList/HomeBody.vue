@@ -63,9 +63,16 @@
         methods: {
             ...mapActions(['submitForm']),
             jump(id) {
+                let roomInfo={};
+                this.recommendList.forEach((item)=>{
+                    if(item.id==id){
+                        roomInfo=item;
+                    }
+                })
                 this.$router.push({name: 'orderadd',params: {
                         minTime: this.minTime,
-                        id:id
+                        id:id,
+                        roomInfo:roomInfo
                     }
                 });
             },
@@ -196,6 +203,7 @@
                     width:100%;
                     font-weight: bold;
                     font-size:1rem;
+                    padding:0.3rem 0;
                 }
                 .intro {
                     position: absolute;

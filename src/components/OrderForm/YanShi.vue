@@ -1,13 +1,32 @@
 <template>
     <div class="yanShi">
-        <el-row type="flex">
-            <el-col :span="15">
-                <div class="status">延时</div>
-                <div class="time">06月03日<span class="week">周一</span></div>
-            </el-col>
-            <el-col :span="9"><p class="dayNum">3晚</p></el-col>
-        </el-row>
-        <div class="infoBox">
+        <div class="orderTop">
+            <el-row type="flex">
+                <el-col :span="5">
+                    <div class="picture"><img src="../../assets/img/bigbed.png" alt=""/></div>
+                </el-col>
+                <el-col :span="11">
+                    <div>
+                        <h4>202精致大床房</h4>
+                        <p class="housType">大床房</p>
+                    </div>
+                </el-col>
+                <el-col :span="7">
+                    <div class="hotel">鹏程国家大酒店</div>
+                </el-col>
+            </el-row>
+        </div>
+
+        <div class="bgBox">
+            <el-row type="flex " class="delay">
+                <el-col :span="15">
+                    <div class="status">延时</div>
+                    <div class="time">06月03日<span class="week">周一</span></div>
+                </el-col>
+                <el-col :span="9"><p class="dayNum">3晚</p></el-col>
+            </el-row>
+        </div>
+        <div class="infoBoxs">
             <h4>延时费用</h4>
             <div class="info">
                 <div class="infoItem">
@@ -57,16 +76,61 @@
     }
 </script>
 <style lang="less" scoped>
+    .orderTop{
+        height:105px;
+        background:rgba(255,255,255,1);
+        padding:20px 10px 20px 20px;
+        box-sizing: border-box;
+        .el-row{
+            align-items: center;
+            .el-col{
+                text-align: left;
+                h4{
+                    font-size:16px;
+                }
+            }
+        }
+        .picture{
+            width:55px;
+            height:65px;
+            img{
+                width:100%;
+                height:100%;
+                object-fit: cover;
+            }
+        }
+        .hotel{
+            color:rgba(70, 70, 70, 1);
+            margin-bottom:15px;
+            font-size:14px;
+            font-weight:400;
+        }
+        .housType{
+            font-size:14px;
+            font-weight:400;
+            color:rgba(122,122,122,1);
+            line-height:14px;
+            margin-top:3px;
+        }
+
+    }
     .el-row{
         background:white;
-        height:79px;
         background:rgba(255,255,255,1);
-        padding:19px 25px;
         text-align: left;
         align-items: center;
     }
+    .bgBox{
+        padding:1.25rem 0;
+        background:#eee;
+    }
+    .delay{
+        padding:1.5rem;
+        display: flex;
+        align-items: flex-end;
+    }
     .yanShi{
-        margin-top:13px;
+
         .time{
             color:#333333;
             font-size:22px;
@@ -92,11 +156,11 @@
             line-height:16px;
             padding-left: 8px;
         }
-        .infoBox{
+
+        .infoBoxs{
             background:white;
-            margin-top:16px;
             text-align: left;
-            padding:25px;
+            padding:1rem 1.25rem;
             margin-bottom:20px;
             font-size:14px;
             h4{

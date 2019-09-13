@@ -33,6 +33,11 @@ export default new Router({
       component: () => import('./views/Information.vue')
     },
     {
+      path:'/orderForm',
+      name: 'orderForm',
+      component: () => import('./views/OrderForm.vue')
+    },
+    {
       path:'/invoice',
       name: 'invoice',
       component: () => import('./views/Invoice.vue')
