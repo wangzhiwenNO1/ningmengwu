@@ -11,7 +11,7 @@
 
             </el-col>
             <el-col :span="8">
-                <router-link to="/orderadd">
+                <router-link to="/indent">
                     <div class="grid-content bg-purple-dark icon-box">
                         <img src="../assets/img/order.png" alt=""/>
                     </div>

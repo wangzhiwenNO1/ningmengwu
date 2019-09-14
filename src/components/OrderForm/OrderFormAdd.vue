@@ -1,5 +1,21 @@
 <template>
     <div class="orderAdd">
+        <div class="orderTop">
+            <el-row type="flex">
+                <el-col :span="5">
+                    <div class="picture"><img src="../../assets/img/bigbed.png" alt=""/></div>
+                </el-col>
+                <el-col :span="11">
+                    <div>
+                        <h4>{{roomInfo.number}}{{roomInfo.name}}</h4>
+                        <p class="housType">{{roomInfo.name}}</p>
+                    </div>
+                </el-col>
+                <el-col :span="7">
+                    <div class="hotel">{{roomInfo.hotel_name}}</div>
+                </el-col>
+            </el-row>
+        </div>
         <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="roomId"></TimeTwo>
 <!--        <Time @timeIn="changeTimeIn" @timeOut="changeTimeOut"></Time>-->
         <div class="infoBox">
@@ -94,7 +110,7 @@
                 <div class="infoItem">
                     <div class="name">合计</div>
                     <i class="xian"></i>
-                    <div class="information">¥{{price}}</div>
+                    <div class="information">¥{{price?price:0}}</div>
                 </div>
             </div>
             <div class="explain">
@@ -157,9 +173,11 @@
             this.roomId = this.$route.params.id;
             console.log(this.$route.params);
             if(this.$route.params){
-                this.roomInfo=this.$route.params.roomInfo;
+                // this.roomInfo=this.$route.params.roomInfo;
                 this.overTime = this.$route.params.minTime;
             }
+            this.getInfo();
+
         },
         methods: {
             ...mapActions(['submitForm']),
@@ -235,10 +253,65 @@
             changeReserve(e) {
                 this.isReserve = e;
             },
+            getInfo(){
+                this.submitForm({
+                    url: "order/check",
+                    data: {room_id:this.roomId},
+                    callback: (data) => {
+                        console.log("order/check",data.data);
+                        if (data.error == 0) {
+                            if(data.data){
+                                this.roomInfo=data.data;
+                            }
+                        }else{
+                            this.$Message.info(data.message);
+                        }
+                    }
+                })
+            }
         }
     }
 </script>
 <style lang="less" scoped>
+
+    .orderTop{
+        height:105px;
+        background:rgba(255,255,255,1);
+        padding:20px 10px 20px 20px;
+        box-sizing: border-box;
+        .el-row{
+            align-items: center;
+            .el-col{
+                text-align: left;
+                h4{
+                    font-size:16px;
+                }
+            }
+        }
+        .picture{
+            width:55px;
+            height:65px;
+            img{
+                width:100%;
+                height:100%;
+                object-fit: cover;
+            }
+        }
+        .hotel{
+            color:rgba(70, 70, 70, 1);
+            margin-bottom:15px;
+            font-size:14px;
+            font-weight:400;
+        }
+        .housType{
+            font-size:14px;
+            font-weight:400;
+            color:rgba(122,122,122,1);
+            line-height:14px;
+            margin-top:3px;
+        }
+
+    }
     .checkIn {
         background: white;
         height: 79px;

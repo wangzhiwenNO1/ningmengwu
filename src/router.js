@@ -77,5 +77,15 @@ export default new Router({
       name: 'webverify',
       component: () => import('./views/WebVerify.vue')
     },
+    {
+      path:'/management',
+      name: 'management',
+      component: () => import('./views/Management.vue')
+    },
+    {
+      path:'/rounds',
+      name: 'rounds',
+      component: () => import('./views/Rounds.vue')
+    },
   ]
 })

@@ -46,7 +46,7 @@
                     <li><span>支付金额：</span>320元</li>
                 </ul>
                 <div class="btnRow">
-                    <el-button class="add">立即退房</el-button>
+                    <el-button class="add" @click.stop="outRoom">立即退房</el-button>
                     <el-button class="cancel">取消</el-button>
                 </div>
             </div>
@@ -57,7 +57,7 @@
 
 <script>
     // @ is an alias to /src
-
+    import {mapActions} from 'vuex'
     export default {
         name: 'TuiFang',
         components: {
@@ -66,13 +66,53 @@
         data() {
             return {
                 pay:false,
-                checkOut:true
+                checkOut:true,
+                orderId:"",
+                roomInfo:'',
             };
         },
+        created(){
+
+            if(this.$route.query){
+                this.orderId=this.$route.query.roomId;
+                this.getInfo();
+            }
+        },
         methods:{
+            ...mapActions(['submitForm']),
             addPay(){
                 this.pay=!this.pay;
-            }
+            },
+            outRoom(){
+                this.submitForm({
+                    url: "orderaction/checkout",
+                    data: {order_id:this.orderId},
+                    callback: (data) => {
+                        console.log("orderaction/checkout",data);
+                        if (data.error == 0) {
+
+                        }else{
+                            this.$Message.info(data.message);
+                        }
+                    }
+                })
+            },
+            getInfo(){
+                this.submitForm({
+                    url: "order/check",
+                    data: {room_id:this.orderId},
+                    callback: (data) => {
+                        console.log("order/check",data.data);
+                        if (data.error == 0) {
+                            if(data.data){
+                                this.roomInfo=data.data;
+                            }
+                        }else{
+                            this.$Message.info(data.message);
+                        }
+                    }
+                })
+            },
         }
     }
 </script>

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <OrderFormTop></OrderFormTop>
         <OrderFormAdd></OrderFormAdd>
     </div>
 </template>

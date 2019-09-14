@@ -16,7 +16,7 @@
                 </el-col>
             </el-row>
         </div>
-        <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="roomId"></TimeTwo>
+        <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="roomId" :startDate="endDate"></TimeTwo>
         <div class="infoBox">
             <h4>续住费用</h4>
             <div class="info">
@@ -33,7 +33,7 @@
                 <div class="infoItem">
                     <div class="name">合计</div>
                     <i class="xian"></i>
-                    <div class="information">¥{{price}}</div>
+                    <div class="information">¥{{roomInfo.price}}</div>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                     <li><span>支付金额：</span>320元</li>
                 </ul>
                 <div class="btnRow">
-                    <el-button class="add">继续支付</el-button>
+                    <el-button class="add" @click.stop="defray">继续支付</el-button>
                     <el-button class="cancel">取消</el-button>
                 </div>
             </div>
@@ -79,6 +79,9 @@
                 roomId:"",
                 roomInfo:"",
                 nightNum:1,
+                inDate:"",
+                outDate:'',
+                endDate:"2019-09-29",
             };
         },
         computed:{
@@ -87,7 +90,6 @@
             }
         },
         created(){
-
             if(this.$route.query){
                 this.roomId=this.$route.query.roomId;
                 this.getInfo();
@@ -119,6 +121,9 @@
                         }
                     }
                 })
+            },
+            defray(){
+                console.log(123);
             }
         }
     }

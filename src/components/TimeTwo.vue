@@ -29,6 +29,7 @@
                     fromText="从"
                     toText="到"
                     :disabledDates="disabledDates"
+                    :minDate="startDate"
                     @update="upDate"
                     @confirm="confirmTime">
             </VueHotelDatepicker>
@@ -44,7 +45,7 @@
 
     export default {
         name: 'Time',
-        props:["over","room_id"],
+        props:["over","room_id","startDate"],
         components: {
             VueHotelDatepicker
         },
@@ -68,6 +69,8 @@
         },
         created() {
             this.initDate();
+
+            console.log(this.startDate);
 
             this.submitForm({
                 url: "order/check",
@@ -105,7 +108,12 @@
             },
             confirmTime(e){
 
-                let nightNum=e.end.split("-")[2]- e.start.split("-")[2];
+                // let nightNum=e.end.split("-")[2]- e.start.split("-")[2];
+                let startTime=new Date(e.end);
+                let endTime=new Date(e.start);
+
+                let nightNum=(startTime.getTime()- endTime.getTime())/86400000;
+
                 this.nightNum=nightNum==0?1:nightNum;
                 e.nightNum=this.nightNum;
 
