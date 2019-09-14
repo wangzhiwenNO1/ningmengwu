@@ -36,14 +36,20 @@
             <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
 
-        <div class="lockBox" @click="handleClose">
+        <div class="lockBox" @click="handleClose" v-if="!locking">
+            <div class="lock">
+                <img src="../../assets/img/homepage/kai.png" alt="">
+            </div>
+            <div class="lockText">已入住</div>
+        </div>
+
+        <div class="lockBox blankBox" @click="handleClose" v-else>
             <div class="lock">
                 <img src="../../assets/img/homepage/suo.png" alt="">
             </div>
-            <div class="lockText" v-if="!locking">已入住</div>
-            <div class="lockText" v-else>已锁定</div>
+            <div class="lockText">已锁定</div>
         </div>
-        <div class="messageBox" v-if="message" @click="handleClose">
+        <div class="messageBox " v-if="message" @click="handleClose">
             <div class="message">
                 <i class="icon"></i>
                 <div class="messageText">
@@ -70,7 +76,7 @@
                 dataList:[],
                 roomInfo:"",
                 endDate:"",//离店日期
-                roomId:"",//房间id
+                order_id:"",//订单id
                 message: false,
                 locking:false,//锁定
                 swiperOption: {
@@ -114,13 +120,13 @@
 
                 switch (idx) {
                     case 1:
-                        this.$router.push({path: '/order', query: {type: 1,roomId:this.roomInfo.id}});
+                        this.$router.push({path: '/order', query: {type: 1,order_id:this.roomInfo.id}});
                         break;
                     case 2:
-                        this.$router.push({path: '/order', query: {type: 2,roomId:this.roomInfo.id}});
+                        this.$router.push({path: '/order', query: {type: 2,order_id:this.roomInfo.id}});
                         break;
                     case 3:
-                        this.$router.push({path: '/order', query: {type: 3,roomId:this.roomInfo.id}});
+                        this.$router.push({path: '/order', query: {type: 3,order_id:this.roomInfo.id,roomInfo:this.roomInfo}});
                         break;
                     default:
                         break;
@@ -157,6 +163,7 @@
     .swiper-pagination{
         color:white;
     }
+
     .homepage {
         height: calc(100vh - 45px);
         background: white;
@@ -294,6 +301,9 @@
             }
         }
 
+        .blankBox{
+            background:linear-gradient(66deg,rgba(0,0,0,0.89) 0%,rgba(85,85,85,1) 100%);
+        }
         .messageBox {
             width: 100%;
             position: absolute;

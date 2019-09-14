@@ -1,30 +1,33 @@
 <template>
     <div class="tab-bars">
         <el-row>
-            <el-col :span="8">
+            <el-col :span="8" @click="changeStatus(1)">
                 <router-link to="/">
                     <div class="grid-content bg-purple-dark icon-box">
-                        <img src="../assets/img/Ahome.png" alt=""/>
+                        <img src="../assets/img/Ahome.png" alt="" v-if="status==1"/>
+                        <img src="../assets/img/home.png" alt="" v-else/>
                     </div>
-                    <span class="icon-title active">首页</span>
+                    <span :class="status==1?'icon-title active':'icon-title'">首页</span>
                 </router-link>
 
             </el-col>
-            <el-col :span="8">
-                <router-link to="/indent">
+            <el-col :span="8" @click="changeStatus(2)">
+                <router-link to="/indent" >
                     <div class="grid-content bg-purple-dark icon-box">
-                        <img src="../assets/img/order.png" alt=""/>
+                        <img src="../assets/img/Aorder.png" alt="" v-if="status==2"/>
+                        <img src="../assets/img/order.png" alt="" v-else/>
                     </div>
-                    <span class="icon-title">订单</span>
+                    <span :class="status==2?'icon-title active':'icon-title'">订单</span>
                 </router-link>
 
             </el-col>
-            <el-col :span="8">
+            <el-col :span="8" @click="changeStatus(3)">
                 <router-link to="/me">
                     <div class="grid-content bg-purple-dark icon-box">
-                        <img src="../assets/img/personal.png" alt=""/>
+                        <img src="../assets/img/Apersonal.png" alt="" v-if="status==3"/>
+                        <img src="../assets/img/personal.png" alt="" v-else/>
                     </div>
-                    <span class="icon-title">我的</span>
+                    <span :class="status==3?'icon-title active':'icon-title'">我的</span>
                 </router-link>
 
             </el-col>
@@ -38,9 +41,15 @@ export default {
     name:"tabbars",
     data(){
         return{
-
+            status:1,
         }
     },
+    methods:{
+        changeStatus(e){
+            console.log(e);
+            this.status=e;
+        }
+    }
 }
 </script>
 

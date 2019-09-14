@@ -16,7 +16,7 @@
                 </el-col>
             </el-row>
         </div>
-        <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="roomId" :startDate="endDate"></TimeTwo>
+        <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="order_id" :startDate="endDate"></TimeTwo>
         <div class="infoBox">
             <h4>续住费用</h4>
             <div class="info">
@@ -45,11 +45,11 @@
             <div class="payBox">
                 <h4>订单详情</h4>
                 <ul>
-                    <li><span>订单编号：</span>2345677895434231</li>
-                    <li><span>入住时间：</span>2019-06-03至2019-06-07</li>
-                    <li><span>姓名：</span>张三</li>
-                    <li><span>手机号：</span>13523465211</li>
-                    <li><span>身份证号：</span>4103061999***0099</li>
+                    <li><span>订单编号：</span>{{roomInfo.id*10000}}</li>
+                    <li><span>入住时间：</span>{{roomInfo.begin_date}}至{{roomInfo.end_date}}</li>
+                    <li><span>姓名：</span>{{roomInfo.name}}</li>
+                    <li><span>手机号：</span>{{roomInfo.mobile}}</li>
+                    <li><span>身份证号：</span>{{roomInfo.idcard}}</li>
                     <li><span>支付金额：</span>320元</li>
                 </ul>
                 <div class="btnRow">
@@ -76,12 +76,12 @@
             return {
                 pay: false,
                 overTime: "",//入住时间是否超过零时
-                roomId:"",
+                order_id:"",
                 roomInfo:"",
                 nightNum:1,
                 inDate:"",
                 outDate:'',
-                endDate:"2019-09-29",
+                endDate:"",
             };
         },
         computed:{
@@ -91,7 +91,7 @@
         },
         created(){
             if(this.$route.query){
-                this.roomId=this.$route.query.roomId;
+                this.order_id=this.$route.query.order_id;
                 this.getInfo();
             }
 
@@ -107,13 +107,16 @@
                 this.nightNum = e.nightNum;
             },
             getInfo(){
+
+                //订单详情
                 this.submitForm({
-                    url: "order/check",
-                    data: {room_id:this.roomId},
+                    url: "orderaction/info",
+                    data: {order_id:this.order_id},
                     callback: (data) => {
-                        console.log("order/check",data.data);
+                        console.log("orderaction/info",data.data);
                         if (data.error == 0) {
                             if(data.data){
+                                data.data.idcard=data.data.idcard.replace(/^(.{6})(?:\w+)(.{4})$/, "$1****$2");
                                 this.roomInfo=data.data;
                             }
                         }else{
@@ -182,7 +185,6 @@
     }
 
     .xuZhu {
-
         .time {
             color: #333333;
             font-size: 22px;

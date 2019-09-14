@@ -155,9 +155,9 @@
 
             },
             confirm(id){
+                let sum=0;
                 this.dataList.forEach(item=>{
                     if(item.id==id){
-                        let sum=0;
                         item.goodsList.forEach(it=>{
                             sum+=(it.number)*(it.price);
                         });
