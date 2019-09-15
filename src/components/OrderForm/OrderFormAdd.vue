@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            <h4>费用<span> 2人3晚</span></h4>
+            <h4>费用<span> {{numPer}}人{{nightNum}}晚</span></h4>
             <div class="info">
                 <div class="infoItem">
                     <div class="name">房费</div>
@@ -162,6 +162,7 @@
                 overTime:'',//当前是否超过24时
                 roomInfo:{},//房间信息
                 nightNum:1,//几夜
+                numPer:1,//几人
             };
         },
         computed:{
@@ -203,7 +204,7 @@
                             callback: (data) => {
                                 console.log("userAdd",data);
                                 if (data.error == 0) {
-
+                                    // this.$router.push({path: 'homelist', params: {type: 2}});
                                 }else{
                                     this.$Message.info(data.message);
                                 }
@@ -246,9 +247,11 @@
             },
             addUser() {
                 this.userArr.push({name: "李四", tel: "13112354658",idcard: "412829199012300015"});
+                this.numPer+=1;
             },
             delUser() {
                 this.userArr.pop();
+                this.numPer-=1;
             },
             changeReserve(e) {
                 this.isReserve = e;

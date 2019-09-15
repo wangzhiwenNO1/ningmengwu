@@ -15,16 +15,17 @@
                 <i class="xian"></i>
             </div>
             <div class="house-list">
-                <ul class="standard">
-                    <li v-for="(item,index) in recommendList" :key="index" @click="jump(item.id)">
+                <ul class="standard" v-if="recommendList">
+                    <li v-for="(item,index) in recommendList" :key="index" @click="jump(item.id)" >
                         <div class="roomType">{{item.name}}</div>
-                        <img src="../../assets/img/standard.png" alt="">
+                        <img :src="item.img" alt="">
                         <div class="intro">
                             <p class="room-num">房号：202</p>
                             <p class="price">￥{{item.price}}</p>
                         </div>
                     </li>
                 </ul>
+                <div v-else>此楼层暂无房间</div>
             </div>
             <div class="floor ">
                 <ul>
@@ -59,6 +60,7 @@
         created() {
             this.getBanner();
             this.recommendFloor();
+
         },
         methods: {
             ...mapActions(['submitForm']),
@@ -92,10 +94,11 @@
                 console.log(index);
                 this.isRecommend=false;
                 this.currentFloor=index;
+                this.recommendFloor(this.currentFloor)
             },
-            recommendFloor() {
+            recommendFloor(floor) {
                 this.submitForm({
-                    url: "room/lists", data: {hotel_id: "1"}, callback: (data) => {
+                    url: "room/lists", data: {hotel_id: "1",floor:floor}, callback: (data) => {
                         console.log(data);
                         if (data.error == 0) {
                             this.recommendList=data.data;

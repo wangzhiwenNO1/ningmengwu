@@ -13,12 +13,12 @@
         <ul class="infinite-list" v-infinite-scroll="load" >
             <li v-for="(item,index) in dataList" class="infinite-list-item infoBox" :key="index">
                 <div>
-                    <label>退房客房</label><span>{{item.number}}{{item.name}}</span>
+                    <span>退房客房</span><span>{{item.number}}{{item.name}}</span>
                 </div>
                 <div>
-                    <label>退房时间</label><span>{{item.checkout_time}}</span>
+                    <span>退房时间</span><span>{{item.checkout_time}}</span>
                 </div>
-                <div><label>消费明细</label></div>
+                <div><span>消费明细</span></div>
                 <div v-for="(goos,idx) in item.goodsList" :key="idx">
                     <label>{{goos.name}}</label>
                     <RadioGroup v-model="goos.number" @on-change="(e)=>changeGoods(e,item.id,goos.price)">
@@ -156,14 +156,29 @@
             },
             confirm(id){
                 let sum=0;
+                let arr=[];
                 this.dataList.forEach(item=>{
                     if(item.id==id){
                         item.goodsList.forEach(it=>{
                             sum+=(it.number)*(it.price);
+                            console.log(it);
+                            arr.push({id:it.id,num:it.number});
                         });
                         console.log(sum);
                     }
-                })
+                });
+
+
+                // this.submitForm({
+                //     url: "operate/checkin", data: {order_id:this.order_id}, callback: (data) => {
+                //         console.log("operate/checkin", data.data);
+                //         if (data.error == 0) {
+                //             this.$Message.success(data.data);
+                //             this.isShow=false;
+                //         }
+                //     }
+                // })
+
             },
             // 格式化日期，如月、日、时、分、秒保证为2位数
             formatNumber(n) {
@@ -260,8 +275,13 @@
             overflow:auto;
             padding-bottom: 1rem;
 
+            span{
+                padding:0.3rem;
+                display: inline-block;
+            }
             label{
                 padding:0.3rem;
+                font-size:0.8rem;
                 display: inline-block;
             }
         }

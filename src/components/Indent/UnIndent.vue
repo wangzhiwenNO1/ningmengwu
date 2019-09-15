@@ -56,7 +56,7 @@
         },
         computed: {
             noMore() {
-                return this.count >= 20
+                return this.current_page==this.last_page;
             },
             disabled() {
                 return this.loading || this.noMore

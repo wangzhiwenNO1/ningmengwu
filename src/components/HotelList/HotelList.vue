@@ -14,8 +14,8 @@
                 </el-col>
             </el-row>
         </div>
-        <ul class="hotellist infinite-list" v-infinite-scroll="load" infinite-scroll-disabled="disabled" style="overflow:auto">
-            <li class="infinite-list-item" v-for="(item,index) in hotelList" :key="index" @click="changeClick">
+        <ul class="hotellist infinite-list" v-infinite-scroll="load" >
+            <li class="infinite-list-item" v-for="(item,index) in hotelList" :key="index" @click="changeClick(item)">
                 <el-row :gutter="20" :data-id="item.id">
                     <el-col :span="5">
                         <div class="picture"><img :src="item.img" alt=""/></div>
@@ -56,6 +56,7 @@
                 hotelList:[],
                 count:'',
                 loading:false,
+                last_page:"",
             }
         },
         computed: {
@@ -71,27 +72,46 @@
         },
         methods: {
             ...mapActions(['submitForm']),
-            changeClick() {
-                this.$router.push({path: '/'});
+            changeClick(data) {
+
+                this.$router.push({path: '/homelist', query: {hotel: data}});
             },
             getHotel() {
                 this.submitForm({
-                    url: "hotel/lists", data: {}, callback: (data) => {
-                        console.log(data);
+                    url: "hotel/lists", data: {page:this.current_page}, callback: (data) => {
+                        console.log("hotel/lists",data);
                         if (data.error == 0) {
+                            if(data.data.current_page==1){
+                                this.hotelList=data.data.data;
+                            }else{
+                                this.hotelList.push(data.data.data);
+                            }
                             this.current_page=data.data.current_page;
-                            this.hotelList=data.data.data;
+                            this.last_page=data.data.last_page;
                         }
                     }
                 })
             },
             load () {
                 console.log(this.hotelList);
+                this.loading = true;
+
+                if(this.current_page==this.last_page){
+                    this.loading = false;
+                }else{
+                    this.current_page++;
+                    this.getHotel();
+                }
             }
         }
     }
 </script>
 <style lang="less" scoped>
+    .infinite-list {
+        height: 100%;
+        background: #F5F5F5;
+        overflow:auto;
+    }
     .el-col el-col-5{
         padding:0;
     }

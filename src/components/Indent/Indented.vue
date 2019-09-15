@@ -47,7 +47,7 @@
             };
         },
         created(){
-            this.getList(2);
+            this.getList(4);
         },
         methods:{
             ...mapActions(['submitForm']),
@@ -79,7 +79,7 @@
                     this.loading = false;
                 }else{
                     this.current_page++;
-                    this.getList(2);
+                    this.getList(4);
                 }
             },
             formatTime(number, format) {

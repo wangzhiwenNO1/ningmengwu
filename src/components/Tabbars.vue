@@ -1,7 +1,7 @@
 <template>
     <div class="tab-bars">
         <el-row>
-            <el-col :span="8" @click="changeStatus(1)">
+            <el-col :span="8" @click.native="changeStatus(1)">
                 <router-link to="/">
                     <div class="grid-content bg-purple-dark icon-box">
                         <img src="../assets/img/Ahome.png" alt="" v-if="status==1"/>
@@ -11,7 +11,7 @@
                 </router-link>
 
             </el-col>
-            <el-col :span="8" @click="changeStatus(2)">
+            <el-col :span="8" @click.native="changeStatus(2)">
                 <router-link to="/indent" >
                     <div class="grid-content bg-purple-dark icon-box">
                         <img src="../assets/img/Aorder.png" alt="" v-if="status==2"/>
@@ -21,7 +21,7 @@
                 </router-link>
 
             </el-col>
-            <el-col :span="8" @click="changeStatus(3)">
+            <el-col :span="8" @click.native="changeStatus(3)">
                 <router-link to="/me">
                     <div class="grid-content bg-purple-dark icon-box">
                         <img src="../assets/img/Apersonal.png" alt="" v-if="status==3"/>
