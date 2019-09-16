@@ -1,6 +1,6 @@
 <template>
     <div class="timeBox">
-        <div>
+        <div class="backplane">
             <el-row type="flex" class="checkIn">
                 <el-col :span="10">
                     <div class="status">入住</div>
@@ -10,28 +10,42 @@
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="4" class="dayBox"><p class="dayNum">3晚</p></el-col>
+                <el-col :span="4" class="dayBox"><p class="dayNum">{{nightNum}}晚</p></el-col>
                 <el-col :span="10">
                     <div class="status">离店</div>
                     <div class="date-time-input">
                         <div class="time">{{outDate}}<span class="week">{{outWeek}}</span></div>
                     </div>
-
                 </el-col>
             </el-row>
         </div>
-        <VueHotelDatepicker :weekList="weekList" :monthList="monthList"></VueHotelDatepicker>
+        <div class="datepicker">
+            <VueHotelDatepicker
+                    format="YYYY-MM-DD"
+                    :weekList="weekList"
+                    :monthList="monthList"
+                    confirmText="确认"
+                    resetText="重设"
+                    fromText="从"
+                    toText="到"
+                    :disabledDates="disabledDates"
+                    :minDate="startDate"
+                    @update="upDate"
+                    @confirm="confirmTime">
+            </VueHotelDatepicker>
+        </div>
     </div>
 </template>
 
 <script>
     // @ is an alias to /src
     import VueHotelDatepicker from '@northwalker/vue-hotel-datepicker'
-    import '../assets/css/hotel-datepicker.css'
+    // import '../assets/css/hotel-datepicker.css'
     import {mapActions} from 'vuex'
 
     export default {
         name: 'Time',
+        props:["over","room_id","startDate"],
         components: {
             VueHotelDatepicker
         },
@@ -47,27 +61,158 @@
                 initDateIn:"",//初始选择入店时间
                 initDateOut:"",//初始选择离店时间，
                 weekList:['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-                monthList:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+                monthList:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                disabledDates:[],//禁止选择日期
+                nightNum:1,//住几晚
+                roomInfo:"",//房间信息
             };
         },
         created() {
+            this.initDate();
 
+            console.log(this.startDate);
+
+            this.submitForm({
+                url: "order/check",
+                data: {room_id:this.room_id},
+                callback: (data) => {
+                    console.log("order/check",data.data);
+                    if (data.error == 0) {
+                        if(data.data){
+                            this.disabledDates=data.data.saled;
+                            this.roomInfo=data.data;
+                        }
+                    }else{
+                        this.$Message.info(data.message);
+                    }
+                }
+            })
         },
         mounted(){
 
         },
         methods: {
             ...mapActions(['submitForm']),
+            changeWeek(times) {//修改星期
+                let time = times;
+                this.inDate = "0"+(time.getMonth() + 1 )+ "月" +time.getDate() + "日";
+                this.outDate ="0"+ (time.getMonth() + 1 )+ "月" +(time.getDate() + 1 + "日");
+                let day = time.getDay();
+                this.inWeek = "周" + "日一二三四五六".charAt(day);
 
+                time.setTime(time.getTime() + 24 * 60 * 60 * 1000);
+                this.outWeek = "周" + "日一二三四五六".charAt(time.getDay());
+            },
+            upDate(e){
+                let disDate=this.disabledDates;
+            },
+            confirmTime(e){
+
+                // let nightNum=e.end.split("-")[2]- e.start.split("-")[2];
+                let startTime=new Date(e.end);
+                let endTime=new Date(e.start);
+
+                let nightNum=(startTime.getTime()- endTime.getTime())/86400000;
+
+                this.nightNum=nightNum==0?1:nightNum;
+                e.nightNum=this.nightNum;
+
+                for(let i=0;i<this.disabledDates.length;i++){
+                    let disabledDate=this.disabledDates[i];
+                    let startArr=e.start.split("-");
+
+                    for(let j=0;j<nightNum+1;j++){
+
+                        if(startArr.join("-")==disabledDate){
+                            this.$Message.info("请重新选择日期,日期不能有间隔!");
+                            return ;
+                        }
+                        startArr[2]=parseInt(startArr[2])+1;
+                    }
+
+                }
+
+                this.initDateIn=e.start;
+                this.initDateOut=e.end;
+                this.inDate=this.changeRiQi(e.start);
+                let start=new Date(e.start);
+                this.inWeek = "周" + "一二三四五六日".charAt(start.getDay());
+
+                if(e.start==e.end){
+                    let endTimeArr= e.end.split("-");
+                    endTimeArr[2]=parseInt(endTimeArr[2])+1;
+                    this.outDate=this.changeRiQi(endTimeArr.join("-"));
+                    let end=new Date(endTimeArr.join("-"));
+                    this.outWeek = "周" + "一二三四五六日".charAt(end.getDay());
+                    e.end=endTimeArr.join("-");
+                }else{
+                    this.outDate=this.changeRiQi(e.end);
+                    let end=new Date(e.end);
+                    this.outWeek = "周" + "一二三四五六日".charAt(end.getDay());
+                }
+
+                e.roomInfo=this.roomInfo;
+                console.log(e);
+                this.$emit("changeTimeTwo",e);
+
+            },
+            changeRiQi(e){
+                let arr = e.toString().split("-");
+                let str=arr[1] + "月" + arr[2] + "日";
+                return str;
+            },
+            initDate(){
+                let times = new Date();
+                if (this.over > 24) {
+                    times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
+                } else {
+                    times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
+                }
+                this.changeWeek(times);
+                this.time = times.toLocaleDateString();
+            },
         }
     }
 </script>
-<style lang="less" scoped>
-    .timeBox{
-        width:370px;
-        height: 80px;
-        background:pink;
+<style lang="less" >
+    .backplane{
+        padding:0.8rem 0;
+        background:#eee;
     }
+    .time{
+        font-size:1.375rem;
+    }
+    .week{
+        font-size:0.8rem;
+    }
+    .timeBox{
+        height: 80px;
+        position: relative;
+    }
+    .datepicker{
+        position: absolute;
+        top:0;
+        width:100%;
+        height:100%;
+        z-index:999;
+    }
+    .vhd-container{
+        width:80%;
+        height:100%;
+        margin:0 auto;
+        .vhd-input{
+            opacity: 0;
+            width:100%;
+            height:100%;
+        }
+        .vhd-picker{
+            position: fixed !important;
+            min-height: 400px !important;
+            left:calc((100% - 300px)/2) !important;
+            top:calc((100% - 400px)/2) !important;
+        }
+    }
+
     .checkIn {
         background: white;
         height: 79px;
@@ -83,8 +228,7 @@
         }
     }
 
-    .orderAdd {
-        margin-top: 13px;
+
 
         .time {
             color: #333333;
@@ -346,5 +490,5 @@
                 text-align: center;
             }
         }
-    }
+
 </style>

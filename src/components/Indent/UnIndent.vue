@@ -23,18 +23,13 @@
                 </el-row>
                 <div class="btnRow">
                     <el-button class="add" @click="continues(item.id)">继续支付</el-button>
-                    <el-button class="cancel">取消</el-button>
+                    <el-button class="cancel" @click="cancelOrder(item.id)">取消</el-button>
                 </div>
             </li>
         </ul>
-        <Spin fix v-if="spinShow">
-            <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-            <div>Loading</div>
-        </Spin>
         <p v-if="loading">加载中...</p>
         <p v-if="noMore">没有更多了</p>
     </div>
-
 
 </template>
 
@@ -42,10 +37,10 @@
     // @ is an alias to /src
     import {mapActions} from 'vuex'
 
-
     export default {
         name: 'UnIndent',
         components: {},
+        props:[],
         data() {
             return {
                 dataList: "",
@@ -57,11 +52,11 @@
             };
         },
         created() {
-            this.getList()
+            this.getList(0)
         },
         computed: {
             noMore() {
-                return this.count >= 20
+                return this.current_page==this.last_page;
             },
             disabled() {
                 return this.loading || this.noMore
@@ -70,9 +65,9 @@
         methods: {
             ...mapActions(['submitForm']),
 
-            getList() {
+            getList(status) {
                 this.submitForm({
-                    url: "order/lists", data: {status: 0,page:this.current_page}, callback: (data) => {
+                    url: "order/lists", data: {status: status,page:this.current_page}, callback: (data) => {
                         console.log("order/lists", data.data);
                         if (data.error == 0) {
                             data.data.data.forEach((item) => {
@@ -94,22 +89,36 @@
             },
             load() {
                 this.loading = true;
-                this.spinShow=true;
+
                 if(this.current_page==this.last_page){
                     this.loading = false;
-                    setTimeout(()=>{
-                        this.spinShow=false;
-                    },200)
-
                 }else{
                     this.current_page++;
-                    this.getList();
-                    setTimeout(()=>{
-                        this.spinShow=false;
-                    },200)
+                    this.getList(0);
                 }
             },
-            continues() {
+            continues(id) {
+                this.submitForm({
+                    url: "wxpay/notice", data: {order_id: id}, callback: (data) => {
+                        console.log("wxpay/notice",data);
+                        if (data.error == 0) {
+                            this.$emit("changePart",2);
+                        }
+                    }
+                })
+            },
+            cancelOrder(id){//取消订单
+
+                // this.submitForm({
+                //     url: "room/banner", data: {hotel_id: "1"}, callback: (data) => {
+                //         console.log("banner",data);
+                //         if (data.error == 0) {
+                //             this.floor = data.data.floor;
+                //             this.bannerList = data.data.imgs;
+                //             this.minTime=data.data.lingchen;
+                //         }
+                //     }
+                // })
 
             },
             // 格式化日期，如月、日、时、分、秒保证为2位数
@@ -155,7 +164,7 @@
     .indent {
         text-align: left;
 
-        height: calc(100vh - 100px) ;
+        height: calc(100vh - 95px) ;
 
         .infinite-list {
             height: 100%;

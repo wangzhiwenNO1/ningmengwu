@@ -5,7 +5,7 @@
                 <i class="icon"></i>
                 <span class="territory">郑州</span>
             </el-col>
-            <el-col :span="13" class="title">鹏程国家大酒店</el-col>
+            <el-col :span="13" class="title">{{hotelInfo?hotelInfo.name:"推荐酒店"}}</el-col>
             <el-col :span="6" class="other-box">
                 <div class="other" @click="otherHotel">其他酒店</div>
             </el-col>
@@ -18,6 +18,7 @@
 
     export default {
         name: 'HomeListTop',
+        props:["hotelInfo"],
         methods:{
             otherHotel(){
                 this.$router.push({ path:'/hotel'})

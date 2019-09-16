@@ -8,6 +8,7 @@ Vue.use(Router);
 export default new Router({
   // mode: 'history',
   // base: process.env.BASE_URL,
+  // http://62.234.129.16/ningmengwu/#/
   routes: [
     {
       path: '/',
@@ -31,6 +32,11 @@ export default new Router({
       path:'/information',
       name: 'information',
       component: () => import('./views/Information.vue')
+    },
+    {
+      path:'/orderForm',
+      name: 'orderForm',
+      component: () => import('./views/OrderForm.vue')
     },
     {
       path:'/invoice',
@@ -71,6 +77,16 @@ export default new Router({
       path:'/webverify',
       name: 'webverify',
       component: () => import('./views/WebVerify.vue')
+    },
+    {
+      path:'/management',
+      name: 'management',
+      component: () => import('./views/Management.vue')
+    },
+    {
+      path:'/rounds',
+      name: 'rounds',
+      component: () => import('./views/Rounds.vue')
     },
   ]
 })

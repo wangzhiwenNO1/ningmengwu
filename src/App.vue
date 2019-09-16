@@ -27,6 +27,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  padding: 0 0 30px;
+  height: calc(100vh - 50px);
+  overflow-y: auto;
 }
 </style>
