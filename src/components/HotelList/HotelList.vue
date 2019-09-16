@@ -51,15 +51,16 @@
         name: 'HotelListCom',
         data() {
             return {
+                input2: '',
                 current_page:"",
                 hotelList:[],
+                count:'',
                 loading:false,
-                last_page:"",
             }
         },
         computed: {
             noMore () {
-                return this.current_page == this.last_page;
+                return this.count >= 20
             },
             disabled () {
                 return this.loading || this.noMore
@@ -70,45 +71,27 @@
         },
         methods: {
             ...mapActions(['submitForm']),
-            changeClick(data) {
-                this.$router.push({path: '/homelist', query: {hotel: data}});
+            changeClick() {
+                this.$router.push({path: '/'});
             },
             getHotel() {
                 this.submitForm({
-                    url: "hotel/lists", data: {page:this.current_page}, callback: (data) => {
-                        console.log("hotel/lists",data);
+                    url: "hotel/lists", data: {}, callback: (data) => {
+                        console.log(data);
                         if (data.error == 0) {
-                            if(data.data.current_page==1){
-                                this.hotelList=data.data.data;
-                            }else{
-                                this.hotelList.push(data.data.data);
-                            }
                             this.current_page=data.data.current_page;
-                            this.last_page=data.data.last_page;
+                            this.hotelList=data.data.data;
                         }
                     }
                 })
             },
             load () {
                 console.log(this.hotelList);
-                this.loading = true;
-
-                if(this.current_page==this.last_page){
-                    this.loading = false;
-                }else{
-                    this.current_page++;
-                    this.getHotel();
-                }
             }
         }
     }
 </script>
 <style lang="less" scoped>
-    .infinite-list {
-        height: 100%;
-        background: #F5F5F5;
-        overflow:auto;
-    }
     .el-col el-col-5{
         padding:0;
     }
