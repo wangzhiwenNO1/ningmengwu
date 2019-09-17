@@ -18,9 +18,10 @@
 
     export default {
         name: 'HomeListTop',
+        props:["hotelInfo"],
         methods:{
             otherHotel(){
-                this.$router.push({ path:'/hotel'})
+                this.$router.push({ path:'/'})
             }
         }
 

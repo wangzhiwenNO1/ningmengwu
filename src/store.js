@@ -16,7 +16,7 @@ export default new Vuex.Store({
             // const baseUrl = process.env.VUE_APP_backend
             const baseUrl = "http://62.234.129.16/ningmw/public/api.php/";
             data = qs.stringify(data);
-            return axios.post(baseUrl+url, data,{
+            return axios.post("/api.php/"+url, data,{
               headers: {'Content-Type': 'application/x-www-form-urlencoded'} //加上这个
               //   headers: {'Content-Type': 'application/json; charset=utf-8'}
             }).then(({data}) => {

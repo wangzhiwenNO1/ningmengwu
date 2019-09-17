@@ -46,6 +46,7 @@
 <script>
     // @ is an alias to /src
     import {mapActions} from 'vuex'
+    import wx from 'weixin-js-sdk'
 
     export default {
         name: 'HotelListCom',
@@ -67,26 +68,60 @@
             }
         },
         created() {
-            this.getHotel();
+            this.getWxInfo();
         },
         methods: {
             ...mapActions(['submitForm']),
-            changeClick() {
-                this.$router.push({path: '/'});
+            changeClick(item) {
+                this.$router.push({path: '/homelist',query:{hotel:item}});
             },
-            getHotel() {
+            getHotel(latitude,longitude) {
+                let that=this;
                 this.submitForm({
-                    url: "hotel/lists", data: {}, callback: (data) => {
+                    url: "hotel/lists", data: {latitude:latitude,longitude:longitude,page:this.current_page}, callback: (data) => {
                         console.log(data);
                         if (data.error == 0) {
-                            this.current_page=data.data.current_page;
-                            this.hotelList=data.data.data;
+                            if(this.current_page==1){
+                                this.current_page=data.data.current_page;
+                                this.hotelList=data.data.data;
+                            }else{
+                                data.data.data.forEach(item=>{
+                                    that.hotelList.push(item)
+                                })
+                            }
+
                         }
                     }
                 })
             },
+            getWxInfo() {
+                let that=this;
+                this.submitForm({
+                    url: "home/option", data: {url:"/#/hotel"}, callback: (data) => {
+                        console.log("home/option",data);
+
+                        wx.config(data.data);
+
+                        wx.ready(function(){
+                            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                            wx.getLocation({
+                                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                                success: function (res) {
+                                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                                    var speed = res.speed; // 速度，以米/每秒计
+                                    var accuracy = res.accuracy; // 位置精度
+                                    console.log(res);
+                                    that.getHotel(res.latitude,res.longitude)
+                                }
+                            });
+                        });
+
+                    }
+                })
+            },
             load () {
-                console.log(this.hotelList);
+
             }
         }
     }
