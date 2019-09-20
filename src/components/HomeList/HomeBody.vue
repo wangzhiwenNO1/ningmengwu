@@ -20,7 +20,7 @@
                         <div class="roomType">{{item.name}}</div>
                         <img :src="item.img" alt="">
                         <div class="intro">
-                            <p class="room-num">房号：202</p>
+                            <p class="room-num">房号：{{item.number}}</p>
                             <p class="price">￥{{item.price}}</p>
                         </div>
                     </li>

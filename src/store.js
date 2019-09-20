@@ -20,8 +20,13 @@ export default new Vuex.Store({
               headers: {'Content-Type': 'application/x-www-form-urlencoded'} //加上这个
               //   headers: {'Content-Type': 'application/json; charset=utf-8'}
             }).then(({data}) => {
-                if(callback){
-                  callback(data);
+
+                if(data.error==-1){
+                    window.location="http://hotel.banlankeji.com/api.php/home/index"
+                }else{
+                    if(callback){
+                        callback(data);
+                    }
                 }
             })
         },

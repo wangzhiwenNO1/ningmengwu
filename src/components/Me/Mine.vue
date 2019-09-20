@@ -1,8 +1,8 @@
 <template>
     <div class="me">
         <div class="head">
-            <div class="avater"><img src="../../assets/img/4.jpg" alt=""></div>
-            <div class="name">张三</div>
+            <div class="avater"><img :src="avatar" alt=""></div>
+            <div class="name">{{nickname}}</div>
         </div>
         <div class="card">
             <ul>
@@ -41,12 +41,22 @@
 </template>
 
 <script>
-
+    import {mapActions} from 'vuex'
     export default {
         name: 'Mine',
+        data(){
+            return{
+                nickname:"",
+                avatar:""
+            }
+        },
         components: {
         },
+        created(){
+            this.getUserInfo();
+        },
         methods:{
+            ...mapActions(['submitForm']),
             jump(index){
                 switch (index) {
                     case 1:
@@ -65,6 +75,17 @@
                         break;
                 }
 
+            },
+            getUserInfo(){
+                this.submitForm({
+                    url: "user/my", data: {}, callback: (data) => {
+                        console.log("user/my",data);
+                        if (data.error == 0) {
+                            this.nickname=data.data.nickname;
+                            this.avatar=data.data.avatar;
+                        }
+                    }
+                })
             }
         }
     }
