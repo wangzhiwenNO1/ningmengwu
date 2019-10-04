@@ -184,37 +184,41 @@
             ...mapActions(['submitForm']),
             addPay() {
                 if (this.zhuName != "" && this.zhuTel != "") {
+
+                    let data={
+                        room_id: this.roomId,
+                        begin_date: this.inDate,
+                        end_date: this.outDate,
+                        name:this.zhuName,
+                        mobile:this.zhuTel,
+                        more:this.userArr,
+                        type:this.isReserve
+                    };
+
                     if (this.isReserve == 1 && this.zhuIdCard != "") {
                         // this.$router.push({path: 'homelist', params: {type: 2}});
-
-                        let data={
-                            room_id: this.roomId,
-                            begin_date: this.inDate,
-                            end_date: this.outDate,
-                            name:this.zhuName,
-                            mobile:this.zhuTel,
-                            idcard:this.zhuIdCard,
-                            more:this.userArr,
-                            type:this.isReserve
-                        };
-
-                        this.submitForm({
-                            url: "order/add", 
-                            data: data,
-                            callback: (data) => {
-                                console.log("userAdd",data);
-                                if (data.error == 0) {
-                                    // this.$router.push({path: 'homelist', params: {type: 2}});
-                                }else{
-                                    this.$Message.info(data.message);
-                                }
-                            }
-                        })
-
+                        data.idcard=this.zhuIdCard;
                     }else if(this.isReserve==2){
+                        data.idcard="";
                         // this.$router.push({path: 'homelist', params: {type: 2}});
                         this.$Message.info('请填写完整信息');
                     }
+
+
+
+                    this.submitForm({
+                        url: "order/add",
+                        data: data,
+                        callback: (data) => {
+                            console.log("userAdd",data);
+                            if (data.error == 0) {
+                                this.$Message.info("成功");
+                                this.$router.push({path: 'homepage'});
+                            }else{
+                                this.$Message.info(data.message);
+                            }
+                        }
+                    })
 
                     if (this.userArr.length > 0) {
                         let isNull = false;

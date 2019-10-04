@@ -88,5 +88,16 @@ export default new Router({
             name: 'rounds',
             component: () => import('./views/Rounds.vue')
         },
+        {
+            path:"/charge",
+            name:"charge",
+            component: () => import('./views/Charge.vue')
+        },
+        {
+            path:"/chargepage",
+            name:"chargepage",
+            component: () => import('./views/ChargePage.vue')
+        }
+
     ]
 })
