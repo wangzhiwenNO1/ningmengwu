@@ -95,8 +95,13 @@
             ...mapActions(['submitForm']),
             changeWeek(times) {//修改星期
                 let time = times;
-                this.inDate = "0"+(time.getMonth() + 1 )+ "月" +time.getDate() + "日";
-                this.outDate ="0"+ (time.getMonth() + 1 )+ "月" +(time.getDate() + 1 + "日");
+                if(time.getMonth()>=9){
+                    this.inDate = (time.getMonth() + 1 )+ "月" +time.getDate() + "日";
+                    this.outDate =(time.getMonth() + 1 )+ "月" +(time.getDate() + 1 + "日");
+                }else{
+                    this.inDate = "0"+(time.getMonth() + 1 )+ "月" +time.getDate() + "日";
+                    this.outDate ="0"+ (time.getMonth() + 1 )+ "月" +(time.getDate() + 1 + "日");
+                }
                 let day = time.getDay();
                 this.inWeek = "周" + "日一二三四五六".charAt(day);
 
