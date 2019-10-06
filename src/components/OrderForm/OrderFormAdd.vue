@@ -213,9 +213,10 @@
                         callback: (data) => {
                             console.log("userAdd",data.data);
                             if (data.error == 0) {
-                                this.$Message.info("成功");
+
                                 // wx.chooseWXPay(data.data);
                                 let d=data.data;
+                                console.log(d.appId,d.timeStamp);
                                 wx.chooseWXPay({
                                     appId:d.appId,
                                     timeStamp: d.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
@@ -226,6 +227,7 @@
                                     success: function (res) {
                                         // 支付成功后的回调函数
                                         console.log(res);
+                                        this.$Message.info("成功");
                                     }
                                 });
                                 // this.$router.push({path: 'homepage'});
