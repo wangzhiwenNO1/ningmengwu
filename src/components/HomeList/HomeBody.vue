@@ -49,6 +49,7 @@
 
 <script>
     // @ is an alias to /src
+    import axios from 'axios'
 
     export default {
         name: 'HomeListBody',
@@ -58,7 +59,8 @@
             }
         },
         computed: {
-
+            axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+                .then(response => (console.log(response)))
         },
         methods: {
             jump(){
