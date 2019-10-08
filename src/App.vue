@@ -6,13 +6,16 @@
 </template>
 
 <script>
-import Tabbars from './components/Tabbars'
-import './assets/css/reset.css'
+import HomeList from './views/HomeList.vue'
+import Tabbars from './components/Tabbars.vue'
 
 export default {
   name: 'app',
   components: {
-    Tabbars,
+    Tabbars
+  },
+  created() {
+
   }
 }
 </script>
@@ -22,8 +25,8 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
   text-align: center;
-  margin-bottom:60px;
+  color: #2c3e50;
+  padding: 0 0 30px;
 }
 </style>

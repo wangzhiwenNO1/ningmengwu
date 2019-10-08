@@ -2,46 +2,38 @@
     <div class="home-body">
         <div class="banner">
             <el-carousel height="175px" arrow="hover" :autoplay="true">
-                <el-carousel-item v-for="item in 4" :key="item">
-                    <img src="../../assets/img/4.jpg" alt=""/>
+                <el-carousel-item v-for="(item,index) in bannerList" :key="index">
+                    <img :src="item" alt=""/>
                 </el-carousel-item>
             </el-carousel>
         </div>
 
         <div class="house-floor">
             <div>
-                <h4>推荐客房</h4>
+                <h4 v-if="isRecommend">推荐客房</h4>
+                <h4 v-else>{{currentFloor}}楼</h4>
                 <i class="xian"></i>
             </div>
             <div class="house-list">
-                <h5>标准间</h5>
                 <ul class="standard">
-                    <li v-for="(item,index) in 5" :key="index" @click="jump">
+                    <li v-for="(item,index) in recommendList" :key="index" @click="jump(item.id)">
+                        <div class="roomType">{{item.name}}</div>
                         <img src="../../assets/img/standard.png" alt="">
                         <div class="intro">
                             <p class="room-num">房号：202</p>
-                            <p class="price">￥320</p>
-                        </div>
-                    </li>
-                </ul>
-                <h5>大床房</h5>
-                <ul class="big-bed">
-                    <li v-for="(item,index) in 5" :key="index" @click="jump">
-                        <img src="../../assets/img/bigbed.png" alt="">
-                        <div class="intro">
-                            <p class="room-num">房号：202</p>
-                            <p class="price">￥320</p>
+                            <p class="price">￥{{item.price}}</p>
                         </div>
                     </li>
                 </ul>
             </div>
-            <div class="floor">
+            <div class="floor ">
                 <ul>
-                    <li v-for="item in 5" :key="item" :class="item==1?'active':''">
+                    <li v-for="item in floor" :key="item" :class="item==1?'active':''" @click="changeFloor(item)">
                         {{item}}楼
                     </li>
                 </ul>
             </div>
+
         </div>
 
     </div>
@@ -49,22 +41,70 @@
 
 <script>
     // @ is an alias to /src
+<<<<<<< HEAD
     import axios from 'axios'
+=======
+    import {mapActions} from 'vuex'
+>>>>>>> 30e9e64e43fe646b37626afee0806eb59ca0a2aa
 
     export default {
         name: 'HomeListBody',
-        data () {
+        data() {
             return {
-
+                bannerList: [],
+                recommendList:[],//推荐房间
+                isRecommend:true,
+                currentFloor:"",
+                floor: "",
+                minTime:"",//判断是否在零点之前
             }
         },
+<<<<<<< HEAD
         computed: {
             axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
                 .then(response => (console.log(response)))
+=======
+        computed: {},
+        created() {
+            this.getBanner();
+            this.recommendFloor();
+>>>>>>> 30e9e64e43fe646b37626afee0806eb59ca0a2aa
         },
         methods: {
-            jump(){
-                this.$router.push({ path:'/orderadd'})
+            ...mapActions(['submitForm']),
+            jump(id) {
+                this.$router.push({name: 'orderadd',params: {
+                        minTime: this.minTime,
+                        id:id
+                    }
+                });
+            },
+            getBanner() {
+                this.submitForm({
+                    url: "room/banner", data: {hotel_id: "1"}, callback: (data) => {
+                        console.log("banner",data);
+                        if (data.error == 0) {
+                            this.floor = data.data.floor;
+                            this.bannerList = data.data.imgs;
+                            this.minTime=data.data.lingchen;
+                        }
+                    }
+                })
+            },
+            changeFloor(index) {
+                console.log(index);
+                this.isRecommend=false;
+                this.currentFloor=index;
+            },
+            recommendFloor() {
+                this.submitForm({
+                    url: "room/lists", data: {hotel_id: "1"}, callback: (data) => {
+                        console.log(data);
+                        if (data.error == 0) {
+                            this.recommendList=data.data;
+                        }
+                    }
+                })
             }
         }
     }
@@ -77,10 +117,12 @@
         line-height: 150px;
         margin: 0;
     }
-    .el-carousel__item img{
-        width:100%;
+
+    .el-carousel__item img {
+        width: 100%;
         object-fit: contain;
     }
+
     .el-carousel__item:nth-child(2n) {
         background-color: #99a9bf;
     }
@@ -88,85 +130,126 @@
     .el-carousel__item:nth-child(2n+1) {
         background-color: #d3dce6;
     }
-    .home-body{
 
-        .house-floor{
-            background:white;
-            margin-bottom:10px;
-            padding-top:15px;
-            .xian{
+    .home-body {
+
+        .house-floor {
+            background: white;
+            margin-bottom: 10px;
+            padding-top: 15px;
+
+            .xian {
                 display: block;
-                width:34px;
-                height:2px;
-                background:rgba(213,176,116,1);
-                border-radius:1px;
-                margin:6px auto 14px;
+                width: 34px;
+                height: 2px;
+                background: rgba(213, 176, 116, 1);
+                border-radius: 1px;
+                margin: 6px auto 6px;
             }
         }
     }
-    .floor{
 
-        ul{
+    .floor {
+
+        ul {
             overflow-x: scroll;
-            display:flex;
-            box-sizing:content-box;
-            padding-right:15px;
-            li{
-                margin:2px 15px;
-                width:102px;
-                height:35px;
-                background:rgba(213,176,116,1);
-                border-radius:6px;
+            display: flex;
+            box-sizing: content-box;
+            padding-right: 15px;
+            &::-webkit-scrollbar {display:none}
+
+            li {
+                margin: 2px 15px;
+                width: 102px;
+                height: 35px;
+                background: rgba(213, 176, 116, 1);
+                border-radius: 6px;
                 flex-shrink: 0;
                 line-height: 35px;
-                color:white;
-                font-size:14px;
+                color: white;
+                font-size: 14px;
             }
-            .active{
-                border:1px solid rgba(213,176,116,1);
+
+            .active {
+                border: 1px solid rgba(213, 176, 116, 1);
             }
         }
     }
-    .house-list{
-        .standard,.big-bed{
-            padding:7px 3px;
+
+    .house-list {
+        .standard, .big-bed {
+            padding: 7px;
             display: flex;
-            overflow-x: auto;
-            li{
+            flex-wrap: wrap;
+            max-height:275px;
+            overflow-y: auto;
+            justify-content: space-between;
+            /*&::-webkit-scrollbar {display:none}*/
+            li {
                 flex-shrink: 0;
-                width:180px;
-                height:120px;
-                margin:0 10px;
+                width: 48%;
+                height: 120px;
                 border-radius: 10px;
                 overflow: hidden;
                 position: relative;
-                img{
+                margin:5px 0;
+                img {
                     display: block;
-                    width:100%;
-                    height:100%;
-                    object-fit: contain;
-                    background:pink;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
                 }
-                .intro{
+                .roomType{
                     position: absolute;
-                    bottom:0;
-                    left:0;
+                    top: 0;
+                    left: 0;
                     width:100%;
-                    height:28px;
+                    font-weight: bold;
+                    font-size:1rem;
+                }
+                .intro {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 28px;
                     line-height: 28px;
                     display: flex;
                     justify-content: space-between;
-                    color:rgba(255, 255, 255, 1);
-                    background:rgba(0,0,0,0.3);
-                    border-radius:0px 0px 5px 5px;
-                    .room-num{
-                        margin-left:8px;
+                    color: rgba(255, 255, 255, 1);
+                    background: rgba(0, 0, 0, 0.3);
+                    border-radius: 0px 0px 5px 5px;
+
+                    .room-num {
+                        margin-left: 8px;
                     }
-                    .price{
-                        margin-right:8px;
+
+                    .price {
+                        margin-right: 8px;
                     }
                 }
             }
         }
+    }
+    .element, .outer-container {
+        width: 100%;
+        height: 100px;
+    }
+
+    .outer-container {
+        border: 5px solid purple;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .inner-container {
+        position: absolute;
+        left: 0;
+        overflow-y: hidden;
+        overflow-x: scroll;
+    }
+
+    .inner-container::-webkit-scrollbar {
+        display: none;
     }
 </style>

@@ -118,6 +118,7 @@
             width:16px;
             height:16px;
             background-size:cover;
+            display: block;
         }
         .arrow{
             background-image:url("../../assets/img/me/icon_more.png");

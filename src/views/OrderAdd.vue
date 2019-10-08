@@ -21,6 +21,9 @@
             return{
                 part:1
             }
+        },
+        created() {
+
         }
     }
 </script>
