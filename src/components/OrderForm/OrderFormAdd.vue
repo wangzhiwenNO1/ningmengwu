@@ -1,31 +1,29 @@
 <template>
     <div class="orderAdd">
-        <el-row type="flex" class="checkIn">
-            <el-col :span="10">
-                <div class="status">入住</div>
-                <div class="date-time-item">
-                    <div class="date-time-input" @click="show">
-                        <div class="time">{{inDate}}<span class="week">{{inWeek}}</span></div>
+        <div class="orderTop">
+            <el-row type="flex">
+                <el-col :span="5">
+                    <div class="picture"><img src="../../assets/img/bigbed.png" alt=""/></div>
+                </el-col>
+                <el-col :span="11">
+                    <div>
+                        <h4>{{roomInfo.number}}{{roomInfo.name}}</h4>
+                        <p class="housType">{{roomInfo.name}}</p>
                     </div>
-                    <date-time ref="dateTime" min="2019/08/23" max="2019/08/29" type="date"
-                               @confirm="changeIn"></date-time>
-                </div>
-
-            </el-col>
-            <el-col :span="4" class="dayBox"><p class="dayNum">3晚</p></el-col>
-            <el-col :span="10">
-                <div class="status">离店</div>
-                <div class="date-time-input" @click="show">
-                    <div class="time">{{outDate}}<span class="week">{{outWeek}}</span></div>
-                </div>
-                <date-time ref="dateTime" type="date" :min="time" @confirm="changeOut"></date-time>
-            </el-col>
-        </el-row>
+                </el-col>
+                <el-col :span="7">
+                    <div class="hotel">{{roomInfo.hotel_name}}</div>
+                </el-col>
+            </el-row>
+        </div>
+        <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="roomId"></TimeTwo>
+<!--        <Time @timeIn="changeTimeIn" @timeOut="changeTimeOut"></Time>-->
         <div class="infoBox">
             <div class="title">
                 <div :class="isReserve==1?'reserve action':'reserve'" @click="changeReserve(1)">自助</div>
                 <div :class="isReserve==1?'reserve':'reserve action'" @click="changeReserve(2)">代订</div>
             </div>
+
             <h4>入住人信息<span>至少选择一人</span></h4>
 
             <div class="personBox">
@@ -86,7 +84,7 @@
                         </el-col>
                         <el-col :span="18">
                             <div>
-                                <input type="text" v-model="zhuIdCard">
+                                <input type="text" v-model="item.idcard">
                             </div>
                         </el-col>
                     </el-row>
@@ -97,22 +95,22 @@
                 </div>
             </div>
 
-            <h4>费用<span> 2人3晚</span></h4>
+            <h4>费用<span> {{numPer}}人{{nightNum}}晚</span></h4>
             <div class="info">
                 <div class="infoItem">
                     <div class="name">房费</div>
                     <i class="xian"></i>
-                    <div class="information">均¥320*1间*3晚</div>
+                    <div class="information">均¥{{roomInfo.price}}*1间*{{nightNum}}晚</div>
                 </div>
                 <div class="infoItem">
                     <div class="name">押金</div>
                     <i class="xian"></i>
-                    <div class="information">无(续住房只需续交房费即可)</div>
+                    <div class="information">{{roomInfo.deposit?"￥"+roomInfo.deposit:"无"}}</div>
                 </div>
                 <div class="infoItem">
                     <div class="name">合计</div>
                     <i class="xian"></i>
-                    <div class="information">¥320</div>
+                    <div class="information">¥{{price?price:0}}</div>
                 </div>
             </div>
             <div class="explain">
@@ -139,84 +137,105 @@
 
 <script>
     // @ is an alias to /src
-    import DateTime from 'vue-date-time-m'
-    import qs from 'qs'
+
+    // import Time from '../Time.vue'
+    import TimeTwo from '../TimeTwo.vue'
     import {mapActions} from 'vuex'
+    import wx from 'weixin-js-sdk'
 
     export default {
         name: 'XuZhu',
         components: {
-            DateTime
+            // Time,
+            TimeTwo
         },
         data() {
             return {
                 pay: true,
                 inDate: '',//入店日期
                 outDate: '',//离店日期
-                inWeek: '',//入店星期
-                outWeek: "",//离店星期
-                time: "",//当前时间
                 isReserve: 1,//是否自己住
                 userArr: [],//添加用户
-                minTime: "",//当前时间
                 zhuName: "张三",//名字
-                zhuTel: "1215456456",//电话
-                zhuIdCard: "4564213245465",//主住的身份证
+                zhuTel: "15713134646",//电话
+                zhuIdCard: "412829199012300013",//主住的身份证
                 roomId: "",//房间id
+                overTime:'',//当前是否超过24时
+                roomInfo:{},//房间信息
+                nightNum:1,//几夜
+                numPer:1,//几人
             };
+        },
+        computed:{
+            price(){
+                return this.roomInfo.price*this.nightNum+this.roomInfo.deposit
+            }
         },
         created() {
             this.roomId = this.$route.params.id;
-            this.minTime = this.$route.params.minTime;
-            console.log(this.roomId);
-            let times = new Date();
-            this.changeWeek(times);
-
-            if (this.minTime > 24) {
-                times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
-            } else {
-                times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
+            console.log(this.$route.params);
+            if(this.$route.params){
+                // this.roomInfo=this.$route.params.roomInfo;
+                this.overTime = this.$route.params.minTime;
             }
-            this.time = times.toLocaleDateString();
+            this.getInfo();
+
         },
         methods: {
             ...mapActions(['submitForm']),
             addPay() {
                 if (this.zhuName != "" && this.zhuTel != "") {
+
+                    let data={
+                        room_id: this.roomId,
+                        begin_date: this.inDate,
+                        end_date: this.outDate,
+                        name:this.zhuName,
+                        mobile:this.zhuTel,
+                        more:this.userArr,
+                        type:this.isReserve
+                    };
+
                     if (this.isReserve == 1 && this.zhuIdCard != "") {
                         // this.$router.push({path: 'homelist', params: {type: 2}});
-                        let time=new Date();
-                        let begin_date=time.getFullYear()+"-"+this.inDate.split("月")[0]+"-"+this.inDate.split("月")[1].split("日")[0];
-                        let end_date=time.getFullYear()+"-"+this.outDate.split("月")[0]+"-"+this.outDate.split("月")[1].split("日")[0];
-
-                        let data={
-                            room_id: this.roomId,
-                            begin_date:begin_date,
-                            end_date:end_date,
-                            name:this.zhuName,
-                            mobile:this.zhuTel,
-                            idcard:this.zhuIdCard,
-                            more:this.userArr,
-                            type:this.isReserve
-                        };
-
-                        this.submitForm({
-                            url: "order/add", 
-                            data: data,
-                            callback: (data) => {
-                                console.log("userAdd",data);
-                                if (data.error == 0) {
-
-                                }else{
-                                    this.$Message.info(data.message);
-                                }
-                            }
-                        })
-
+                        data.idcard=this.zhuIdCard;
                     }else if(this.isReserve==2){
+                        data.idcard="";
                         // this.$router.push({path: 'homelist', params: {type: 2}});
                         this.$Message.info('请填写完整信息');
                     }
+
+
+
+                    this.submitForm({
+                        url: "order/add",
+                        data: data,
+                        callback: (data) => {
+                            console.log("userAdd",data.data);
+                            if (data.error == 0) {
+
+                                // wx.chooseWXPay(data.data);
+                                let d=data.data;
+                                console.log(d.appId,d.timeStamp);
+                                wx.chooseWXPay({
+                                    appId:d.appId,
+                                    timeStamp: d.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                                    nonceStr: d.nonceStr, // 支付签名随机串，不长于 32 位
+                                    package: d.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                                    signType: d.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                                    paySign: d.paySign, // 支付签名
+                                    success: function (res) {
+                                        // 支付成功后的回调函数
+                                        console.log(res);
+                                        this.$Message.info("成功");
+                                    }
+                                });
+                                // this.$router.push({path: 'homepage'});
+                            }else{
+                                this.$Message.info(data.message);
+                            }
+                        }
+                    })
 
                     if (this.userArr.length > 0) {
                         let isNull = false;
@@ -233,41 +252,90 @@
             ensure() {
                 this.pay = false;
             },
-            show() {
-                this.$refs.dateTime.show()
+            show(e) {
+                if(e==1){
+                    this.$refs.dateTimeIn.show()
+                }else{
+                    this.$refs.dateTimeOut.show()
+                }
+
             },
             // 日期组件回调
-            changeIn(val) {
-                let arr = val.toString().split("/");
-                this.inDate = arr[1] + "月" + arr[2] + "日";
-            },
-            changeOut(val) {
-                let arr = val.toString().split("/");
-                this.outDate = arr[1] + "月" + arr[2] + "日";
-            },
-            changeWeek(times) {
-                let time = times;
-                this.inDate = time.getMonth() + 1 + "月" + time.getDate() + "日";
-                this.outDate = (time.getMonth() + 1 + "月") + (time.getDate() + 1 + "日");
-                let day = time.getDay();
-                this.inWeek = "周" + "日一二三四五六".charAt(day);
-
-                time.setTime(time.getTime() + 24 * 60 * 60 * 1000);
-                this.outWeek = "周" + "日一二三四五六".charAt(time.getDay());
+            changeTime(e){
+                this.inDate=e.start.split("/").join("-");
+                this.outDate=e.end.split("/").join("-");
+                this.nightNum=e.nightNum;
             },
             addUser() {
-                this.userArr.push({name: "李四", tel: "5125465456"});
+                this.userArr.push({name: "李四", tel: "13112354658",idcard: "412829199012300015"});
+                this.numPer+=1;
             },
             delUser() {
                 this.userArr.pop();
+                this.numPer-=1;
             },
             changeReserve(e) {
                 this.isReserve = e;
             },
+            getInfo(){
+                this.submitForm({
+                    url: "order/check",
+                    data: {room_id:this.roomId},
+                    callback: (data) => {
+                        console.log("order/check",data.data);
+                        if (data.error == 0) {
+                            if(data.data){
+                                this.roomInfo=data.data;
+                            }
+                        }else{
+                            this.$Message.info(data.message);
+                        }
+                    }
+                })
+            }
         }
     }
 </script>
 <style lang="less" scoped>
+
+    .orderTop{
+        height:105px;
+        background:rgba(255,255,255,1);
+        padding:20px 10px 20px 20px;
+        box-sizing: border-box;
+        .el-row{
+            align-items: center;
+            .el-col{
+                text-align: left;
+                h4{
+                    font-size:16px;
+                }
+            }
+        }
+        .picture{
+            width:55px;
+            height:65px;
+            img{
+                width:100%;
+                height:100%;
+                object-fit: cover;
+            }
+        }
+        .hotel{
+            color:rgba(70, 70, 70, 1);
+            margin-bottom:15px;
+            font-size:14px;
+            font-weight:400;
+        }
+        .housType{
+            font-size:14px;
+            font-weight:400;
+            color:rgba(122,122,122,1);
+            line-height:14px;
+            margin-top:3px;
+        }
+
+    }
     .checkIn {
         background: white;
         height: 79px;
@@ -284,7 +352,7 @@
     }
 
     .orderAdd {
-        margin-top: 13px;
+        background:#eee;
 
         .time {
             color: #333333;
@@ -338,6 +406,9 @@
             .personBox {
                 padding: 10px;
                 background: rgba(251, 251, 251, 1);
+                .person{
+                    padding:1rem 0;
+                }
 
                 .personInfo {
                     display: flex;

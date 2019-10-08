@@ -5,25 +5,25 @@
             <el-row>
                 <el-col :span="18">
                     <div class="input-box">
-                        <input type="text"/>
-                        <i class="icon"></i>
+                        <input type="text" v-model="keyWord"/>
+                        <i class="icon" @click="changeInput"></i>
                     </div>
                 </el-col>
-                <el-col :span="6" class="place">
+                <el-col :span="6" class="place" @click="changeDistance">
                     <i class="icon"></i>离我最近
                 </el-col>
             </el-row>
         </div>
-        <ul class="hotellist infinite-list" v-infinite-scroll="load" infinite-scroll-disabled="disabled" style="overflow:auto">
-            <li class="infinite-list-item" v-for="(item,index) in hotelList" :key="index" @click="changeClick">
-                <el-row :gutter="20" :data-id="item.id">
+        <ul class="hotellist infinite-list" v-infinite-scroll="load" >
+            <li class="infinite-list-item" v-for="(item,index) in hotelList" :key="index" @click="changeClick(item)">
+                <el-row :gutter="20" :data-id="item.id" class="rowList">
                     <el-col :span="5">
                         <div class="picture"><img :src="item.img" alt=""/></div>
                     </el-col>
-                    <el-col :span="14">
-                        <div>
+                    <el-col :span="14" class="rowInfoBox">
+                        <div class="rowInfo">
                             <h4>{{item.name}}</h4>
-                            <p class="site">距离您4.2km</p>
+                            <p class="site" v-if="item.distance">距离您{{item.distance}}km</p>
                             <div class="housType">
                                 <span v-for="(room,ide) in item.room_name" :key="ide">
                                     {{room.name}}
@@ -46,6 +46,7 @@
 <script>
     // @ is an alias to /src
     import {mapActions} from 'vuex'
+    import wx from 'weixin-js-sdk'
 
     export default {
         name: 'HotelListCom',
@@ -56,6 +57,10 @@
                 hotelList:[],
                 count:'',
                 loading:false,
+                latitudes:'',
+                longitudes:'',
+                sort:'',
+                keyWord:'',
             }
         },
         computed: {
@@ -67,31 +72,103 @@
             }
         },
         created() {
-            this.getHotel();
+            this.getWxInfo();
+            // console.log(localStorage.getItem("PHPSESSID"));
+        },
+        mounted(){
+            document.cookie="name=abc";
+            let coo=document.cookie;
+            console.log("document.cookie",coo);
+            console.log("loca",localStorage.getItem("PHPSESSID"));
         },
         methods: {
             ...mapActions(['submitForm']),
-            changeClick() {
-                this.$router.push({path: '/'});
+            changeClick(item) {
+                this.$router.push({path: '/homelist',query:{hotel:item}});
             },
             getHotel() {
+                let that=this;
                 this.submitForm({
-                    url: "hotel/lists", data: {}, callback: (data) => {
-                        console.log(data);
+                    url: "hotel/lists", data: {
+                        latitude:this.latitudes,
+                        longitude:this.longitudes,
+                        page:this.current_page,
+                        sort:this.sort,
+                        key:this.keyWord
+                    },
+                    callback: (data) => {
                         if (data.error == 0) {
-                            this.current_page=data.data.current_page;
-                            this.hotelList=data.data.data;
+                            console.log(data);
+                            if(this.current_page==1){
+                                this.current_page=data.data.current_page;
+                                this.hotelList=data.data.data;
+                            }else{
+                                data.data.data.forEach(item=>{
+                                    that.hotelList.push(item)
+                                })
+                            }
+
+                            this.current_page++;
                         }
                     }
                 })
             },
+            getWxInfo() {
+                let that=this;
+                this.submitForm({
+                    url: "home/option", data: {url:"/#/"}, callback: (data) => {
+                        console.log("home/option",data);
+
+                        wx.config(data.data);
+                        that.getHotel();
+                        if(that.latitudes){
+                            that.getHotel()
+                        }else{
+                            wx.ready(function(){
+                                // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                                wx.getLocation({
+                                    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                                    success: function (res) {
+                                        that.latitudes = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                                        that.longitudes = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                                        // var speed = res.speed; // 速度，以米/每秒计
+                                        // var accuracy = res.accuracy; // 位置精度
+                                        console.log(res);
+                                        that.getHotel()
+                                    }
+                                });
+                            });
+                        }
+                    }
+                })
+            },
+            changeDistance(){
+                this.current_page=1;
+                this.sort=1;
+                this.getHotel();
+            },
+            changeInput(){
+                this.getHotel();
+            },
             load () {
-                console.log(this.hotelList);
+
             }
         }
     }
 </script>
 <style lang="less" scoped>
+    .rowList{
+        height:100%;
+        .rowInfoBox{
+            height:100%;
+        }
+        .rowInfo{
+            height:100%;
+            display:flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    }
     .el-col el-col-5{
         padding:0;
     }
@@ -178,8 +255,8 @@
 
             .site {
                 color: rgba(122, 122, 122, 1);
-                font-size: 12px;
-                margin: 5px 0;
+                font-size: 0.8rem;
+                margin: 0.5rem 0;
             }
 
             .housType {

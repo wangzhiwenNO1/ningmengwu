@@ -14,7 +14,13 @@ Vue.prototype.$axios = axios    //全局注册，使用方法为:this.$axios
 import axios from 'axios';
 import './plugins/iview.js'
 import qs from 'qs'
-import dateTime from 'vue-date-time-m';
+import dateTime from 'vue-date-time-m'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+
+import 'swiper/dist/css/swiper.css'
+
+Vue.use(VueAwesomeSwiper, /* { default global options } */)
+
 
 >>>>>>> 30e9e64e43fe646b37626afee0806eb59ca0a2aa
 

@@ -6,19 +6,27 @@ import qs from 'qs';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    state: {},
+    state: {
+        username:"",
+        password:""
+    },
     mutations: {},
     actions: {
         submitForm({commit},{url,data, callback}) {
             // const baseUrl = process.env.VUE_APP_backend
             const baseUrl = "http://62.234.129.16/ningmw/public/api.php/";
             data = qs.stringify(data);
-            return axios.post(baseUrl+url, data,{
+            return axios.post("/api.php/"+url, data,{
               headers: {'Content-Type': 'application/x-www-form-urlencoded'} //加上这个
               //   headers: {'Content-Type': 'application/json; charset=utf-8'}
             }).then(({data}) => {
-                if(callback){
-                  callback(data);
+
+                if(data.error==-1){
+                    window.location="http://hotel.banlankeji.com/api.php/home/index"
+                }else{
+                    if(callback){
+                        callback(data);
+                    }
                 }
             })
         },

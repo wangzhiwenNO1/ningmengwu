@@ -15,16 +15,17 @@
                 <i class="xian"></i>
             </div>
             <div class="house-list">
-                <ul class="standard">
-                    <li v-for="(item,index) in recommendList" :key="index" @click="jump(item.id)">
+                <ul class="standard" v-if="recommendList">
+                    <li v-for="(item,index) in recommendList" :key="index" @click="jump(item.id)" >
                         <div class="roomType">{{item.name}}</div>
-                        <img src="../../assets/img/standard.png" alt="">
+                        <img :src="item.img" alt="">
                         <div class="intro">
-                            <p class="room-num">房号：202</p>
+                            <p class="room-num">房号：{{item.number}}</p>
                             <p class="price">￥{{item.price}}</p>
                         </div>
                     </li>
                 </ul>
+                <div v-else>此楼层暂无房间</div>
             </div>
             <div class="floor ">
                 <ul>
@@ -41,11 +42,7 @@
 
 <script>
     // @ is an alias to /src
-<<<<<<< HEAD
-    import axios from 'axios'
-=======
     import {mapActions} from 'vuex'
->>>>>>> 30e9e64e43fe646b37626afee0806eb59ca0a2aa
 
     export default {
         name: 'HomeListBody',
@@ -59,23 +56,25 @@
                 minTime:"",//判断是否在零点之前
             }
         },
-<<<<<<< HEAD
-        computed: {
-            axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
-                .then(response => (console.log(response)))
-=======
         computed: {},
         created() {
             this.getBanner();
             this.recommendFloor();
->>>>>>> 30e9e64e43fe646b37626afee0806eb59ca0a2aa
+
         },
         methods: {
             ...mapActions(['submitForm']),
             jump(id) {
+                let roomInfo={};
+                this.recommendList.forEach((item)=>{
+                    if(item.id==id){
+                        roomInfo=item;
+                    }
+                })
                 this.$router.push({name: 'orderadd',params: {
                         minTime: this.minTime,
-                        id:id
+                        id:id,
+                        roomInfo:roomInfo
                     }
                 });
             },
@@ -95,10 +94,11 @@
                 console.log(index);
                 this.isRecommend=false;
                 this.currentFloor=index;
+                this.recommendFloor(this.currentFloor)
             },
-            recommendFloor() {
+            recommendFloor(floor) {
                 this.submitForm({
-                    url: "room/lists", data: {hotel_id: "1"}, callback: (data) => {
+                    url: "room/lists", data: {hotel_id: "1",floor:floor}, callback: (data) => {
                         console.log(data);
                         if (data.error == 0) {
                             this.recommendList=data.data;
@@ -206,6 +206,7 @@
                     width:100%;
                     font-weight: bold;
                     font-size:1rem;
+                    padding:0.3rem 0;
                 }
                 .intro {
                     position: absolute;

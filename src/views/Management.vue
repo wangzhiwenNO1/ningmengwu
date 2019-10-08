@@ -4,7 +4,7 @@
             <img src="" alt="">
         </div>
         <div class="main">
-            <div class="title">前台系统</div>
+            <div class="title">楼层登录</div>
             <div class="formBox">
                 <div class="flexBox">
                     <label class="account ">账号:</label>
@@ -32,7 +32,7 @@
         data () {
             return {
                 password: '123456',
-                name:'ceshiqiantai',
+                name:'ceshilouceng',
                 isLogin:false
             }
         },
@@ -44,7 +44,7 @@
                         console.log("login",data);
                         if (data.error == 0) {
                             this.$Message.success('登录成功');
-                            this.$router.push({ path:'/webverify'});
+                            this.$router.push({ path:'/rounds'});
                         }else{
                             this.isLogin=true;
                         }

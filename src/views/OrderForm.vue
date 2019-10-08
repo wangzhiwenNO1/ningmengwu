@@ -1,6 +1,6 @@
 <template>
     <div>
-        <OrderFormTop></OrderFormTop>
+<!--        <OrderFormTop></OrderFormTop>-->
         <XuZhu v-if="part==1"></XuZhu>
         <YanShi v-if="part==2"></YanShi>
         <TuiFang v-if="part==3"></TuiFang>
@@ -24,7 +24,7 @@
         },
         data(){
             return{
-                part:3
+                part:1
             }
         },
         created() {

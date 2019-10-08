@@ -7,7 +7,7 @@
             <li :class="part==4?'active':''" @click="changeClick(4)">已取消</li>
         </ul>
         <div>
-            <UnIndent v-if="part==1"></UnIndent>
+            <UnIndent v-if="part==1" @changePart="changeClick"></UnIndent>
             <Indenting v-if="part==2"></Indenting>
             <Indented v-if="part==3"></Indented>
             <CancelIndent v-if="part==4"></CancelIndent>

@@ -1,6 +1,6 @@
 <template>
     <div class="home-list">
-        <HomeTop></HomeTop>
+        <HomeTop :hotelInfo="hotel"></HomeTop>
         <HomeBody></HomeBody>
     </div>
 </template>
@@ -18,11 +18,24 @@
         },
         data(){
             return {
-                part:1
+                part:1,
+                hotel:"",
             }
         },
         created() {
-
+            if(this.$route.query){
+                this.hotel=this.$route.query.hotel;
+            }
         }
     }
 </script>
+<style lang="less" scoped>
+    .home-list{
+        height:calc(100vh - 50px);
+        overflow-y: auto ;
+
+    }
+    .home-list::-webkit-scrollbar{
+        display:none;
+    }
+</style>
