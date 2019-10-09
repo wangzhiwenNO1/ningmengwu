@@ -190,6 +190,16 @@
             }
             this.getInfo();
 
+            let times = new Date();
+            if (this.over > 24) {
+                times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
+            } else {
+                times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
+            }
+            this.changeWeek(times);
+            console.log(times.toLocaleDateString());
+
+
         },
         methods: {
             ...mapActions(['submitForm']),
@@ -224,7 +234,6 @@
                         callback: (data) => {
 
                             let d=data.data;
-                            console.log("order/add",parseInt(d.timestamp));
 
                             if (data.error == 0) {
                                 wx.chooseWXPay({
@@ -235,7 +244,6 @@
                                     paySign: d.paySign, // 支付签名
                                     success: function (res) {
                                         // 支付成功后的回调函数
-                                        console.log(res);
                                         this.$Message.info("成功");
                                         this.$router.push({path: 'homepage'})
                                     }
