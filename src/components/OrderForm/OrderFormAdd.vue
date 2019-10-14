@@ -142,6 +142,7 @@
     import TimeTwo from '../TimeTwo.vue'
     import {mapActions} from 'vuex'
     import wx from 'weixin-js-sdk'
+    import moment from "moment"
 
     export default {
         name: 'XuZhu',
@@ -183,22 +184,22 @@
 
 
             this.roomId = this.$route.params.id;
-            console.log(this.$route.params);
             if(this.$route.params){
                 // this.roomInfo=this.$route.params.roomInfo;
                 this.overTime = this.$route.params.minTime;
             }
             this.getInfo();
 
-            let times = new Date();
-            if (this.over > 24) {
-                times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
-            } else {
-                times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
-            }
-            this.changeWeek(times);
-            console.log(times.toLocaleDateString());
+            // let times = new Date();
+            // if (this.over > 24) {
+            //     times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
+            // } else {
+            //     times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
+            // }
+            // let timeArr=times.toLocaleDateString().split("/");
 
+            this.inDate=moment().format("YYYY-MM-DD");
+            this.outDate=moment().add(1, 'days').format("MM月DD日");
 
         },
         methods: {
@@ -303,7 +304,6 @@
                     url: "order/check",
                     data: {room_id:this.roomId},
                     callback: (data) => {
-                        console.log("order/check",data.data);
                         if (data.error == 0) {
                             if(data.data){
                                 this.roomInfo=data.data;
