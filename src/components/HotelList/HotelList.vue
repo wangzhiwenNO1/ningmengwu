@@ -145,6 +145,7 @@
             changeDistance(){
                 this.current_page=1;
                 this.sort=1;
+                console.log(this.sort);
                 this.getHotel();
             },
             changeInput(){
