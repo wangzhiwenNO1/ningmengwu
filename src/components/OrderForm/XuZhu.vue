@@ -16,14 +16,14 @@
                 </el-col>
             </el-row>
         </div>
-        <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="order_id" :startDate="endDate"></TimeTwo>
+        <TimeTwo @changeTimeTwo="changeTime" :over="overTime" :room_id="roomId" :startDate="roomInfo.end_date"></TimeTwo>
         <div class="infoBox">
             <h4>续住费用</h4>
             <div class="info">
                 <div class="infoItem">
                     <div class="name">房费</div>
                     <i class="xian"></i>
-                    <div class="information">均¥{{roomInfo.price}}*1间*{{nightNum}}晚</div>
+                    <div class="information">均¥{{roomInfo.cost}}*1间*{{nightNum}}晚</div>
                 </div>
                 <div class="infoItem">
                     <div class="name">押金</div>
@@ -33,7 +33,7 @@
                 <div class="infoItem">
                     <div class="name">合计</div>
                     <i class="xian"></i>
-                    <div class="information">¥{{roomInfo.price}}</div>
+                    <div class="information">¥{{price}}</div>
                 </div>
             </div>
         </div>
@@ -46,11 +46,11 @@
                 <h4>订单详情</h4>
                 <ul>
                     <li><span>订单编号：</span>{{roomInfo.id*10000}}</li>
-                    <li><span>入住时间：</span>{{roomInfo.begin_date}}至{{roomInfo.end_date}}</li>
+                    <li><span>入住时间：</span>{{inDate}}至{{outDate}}</li>
                     <li><span>姓名：</span>{{roomInfo.name}}</li>
                     <li><span>手机号：</span>{{roomInfo.mobile}}</li>
                     <li><span>身份证号：</span>{{roomInfo.idcard}}</li>
-                    <li><span>支付金额：</span>320元</li>
+                    <li><span>支付金额：</span>{{price}}元</li>
                 </ul>
                 <div class="btnRow">
                     <el-button class="add" @click.stop="defray">继续支付</el-button>
@@ -66,6 +66,7 @@
     // @ is an alias to /src
     import TimeTwo from '../TimeTwo.vue'
     import {mapActions} from 'vuex'
+    import wx from 'weixin-js-sdk'
 
     export default {
         name: 'XuZhu',
@@ -82,18 +83,27 @@
                 inDate:"",
                 outDate:'',
                 endDate:"",
+                roomId:""
             };
         },
         computed:{
             price(){
-                return this.roomInfo.price*this.nightNum+this.roomInfo.deposit
+                return this.roomInfo.cost*this.nightNum
             }
         },
         created(){
             if(this.$route.query){
                 this.order_id=this.$route.query.order_id;
+                this.roomId=this.$route.query.roomId;
                 this.getInfo();
             }
+            this.submitForm({
+                url: "home/option", data: {url:`/#/order?type=1&order_id=${this.order_id}8&roomId=${this.roomId}`}, callback: (datas) => {
+
+                    wx.config(datas.data);
+
+                }
+            });
 
         },
         methods: {
@@ -126,7 +136,33 @@
                 })
             },
             defray(){
-                console.log(123);
+                this.submitForm({
+                    url: "orderaction/extend",
+                    data: {order_id:this.order_id,begin_date:this.inDate,end_date:this.outDate},
+                    callback: (data) => {
+                        console.log("orderaction/extend",data.data);
+                        let d=data.data;
+
+                        if (data.error == 0) {
+                            wx.chooseWXPay({
+                                timestamp:d.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                                nonceStr: d.nonceStr, // 支付签名随机串，不长于 32 位
+                                package: d.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                                signType: d.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                                paySign: d.paySign, // 支付签名
+                                success: function (res) {
+                                    // 支付成功后的回调函数
+                                    this.$Message.info("成功");
+                                    this.$router.push({path: 'homepage'})
+                                }
+                            });
+
+                            // this.$router.push({path: 'homepage'});
+                        }else{
+                            this.$Message.info(data.message);
+                        }
+                    }
+                })
             }
         }
     }

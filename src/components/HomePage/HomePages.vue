@@ -107,7 +107,7 @@
             // 然后你就可以使用当前上下文内的swiper对象去做你想做的事了
             this.swiper.slideTo(3, 1000, false);
             this.getList();
-            console.log(this.dataList);
+
         },
         methods: {
             ...mapActions(['submitForm']),
@@ -120,19 +120,21 @@
 
                 switch (idx) {
                     case 1:
-                        this.$router.push({path: '/order', query: {type: 1,order_id:this.roomInfo.id}});
+                        this.$router.push({path: '/order', query: {type: 1,order_id:this.roomInfo.id,roomId:this.roomInfo.room_id}});
                         break;
                     case 2:
-                        this.$router.push({path: '/order', query: {type: 2,order_id:this.roomInfo.id}});
+                        this.$router.push({path: '/order', query: {type: 2,order_id:this.roomInfo.id,roomId:this.roomInfo.room_id}});
                         break;
                     case 3:
-                        this.$router.push({path: '/order', query: {type: 3,order_id:this.roomInfo.id,roomInfo:this.roomInfo}});
+                        this.$router.push({path: '/order', query: {type: 3,order_id:this.roomInfo.id,roomInfo:this.roomInfo,roomId:this.roomInfo.room_id}});
                         break;
                     default:
                         break;
                 }
             },
-            callback() {
+            callback(e) {
+                console.log(e);
+                this.roomInfo=this.dataList[e];
             },
             getList() {
                 this.submitForm({
@@ -143,7 +145,7 @@
                             if(this.dataList.length>0){
                                 this.endDate=new Date(this.dataList[0].end_date);
                                 this.isLocking(this.endDate);
-                                this.roomInfo=this.dataList[0]
+                                this.roomInfo=this.dataList[data.data.data.length-1];
                             }
                         }
                     }
@@ -282,6 +284,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            z-index: 99999;
 
             .lock {
                 width: 40px;

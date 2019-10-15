@@ -142,6 +142,7 @@
     import TimeTwo from '../TimeTwo.vue'
     import {mapActions} from 'vuex'
     import wx from 'weixin-js-sdk'
+    import moment from "moment"
 
     export default {
         name: 'XuZhu',
@@ -172,13 +173,33 @@
             }
         },
         created() {
+
+            this.submitForm({
+                url: "home/option", data: {url:"/#/orderadd"}, callback: (datas) => {
+
+                    wx.config(datas.data);
+
+                }
+            });
+
+
             this.roomId = this.$route.params.id;
-            console.log(this.$route.params);
             if(this.$route.params){
                 // this.roomInfo=this.$route.params.roomInfo;
                 this.overTime = this.$route.params.minTime;
             }
             this.getInfo();
+
+            // let times = new Date();
+            // if (this.over > 24) {
+            //     times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
+            // } else {
+            //     times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
+            // }
+            // let timeArr=times.toLocaleDateString().split("/");
+
+            this.inDate=moment().format("YYYY-MM-DD");
+            this.outDate=moment().add(1, 'days').format("MM月DD日");
 
         },
         methods: {
@@ -193,7 +214,8 @@
                         name:this.zhuName,
                         mobile:this.zhuTel,
                         more:this.userArr,
-                        type:this.isReserve
+                        type:this.isReserve,
+                        url:"/#/orderadd/"
                     };
 
                     if (this.isReserve == 1 && this.zhuIdCard != "") {
@@ -211,31 +233,29 @@
                         url: "order/add",
                         data: data,
                         callback: (data) => {
-                            console.log("userAdd",data.data);
-                            if (data.error == 0) {
 
-                                // wx.chooseWXPay(data.data);
-                                let d=data.data;
-                                console.log(d.appId,d.timeStamp);
+                            let d=data.data;
+
+                            if (data.error == 0) {
                                 wx.chooseWXPay({
-                                    appId:d.appId,
-                                    timeStamp: d.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                                    timestamp:d.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
                                     nonceStr: d.nonceStr, // 支付签名随机串，不长于 32 位
                                     package: d.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
                                     signType: d.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
                                     paySign: d.paySign, // 支付签名
                                     success: function (res) {
                                         // 支付成功后的回调函数
-                                        console.log(res);
                                         this.$Message.info("成功");
+                                        this.$router.push({path: 'homepage'})
                                     }
                                 });
+
                                 // this.$router.push({path: 'homepage'});
                             }else{
                                 this.$Message.info(data.message);
                             }
                         }
-                    })
+                    });
 
                     if (this.userArr.length > 0) {
                         let isNull = false;
@@ -244,6 +264,8 @@
                             }
                         })
                     }
+
+
                 } else {
                     this.$Message.info('请填写完整信息');
                 }
@@ -282,7 +304,6 @@
                     url: "order/check",
                     data: {room_id:this.roomId},
                     callback: (data) => {
-                        console.log("order/check",data.data);
                         if (data.error == 0) {
                             if(data.data){
                                 this.roomInfo=data.data;
