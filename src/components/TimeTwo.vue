@@ -30,6 +30,7 @@
                     toText="到"
                     :disabledDates="disabledDates"
                     :minDate="startDate"
+                    :singleDaySelection="false"
                     @update="upDate"
                     @confirm="confirmTime">
             </VueHotelDatepicker>
@@ -42,6 +43,9 @@
     import VueHotelDatepicker from '@northwalker/vue-hotel-datepicker'
     // import '../assets/css/hotel-datepicker.css'
     import {mapActions} from 'vuex'
+
+    import moment from "moment"
+    moment.locale('zh-cn');
 
     export default {
         name: 'Time',
@@ -70,13 +74,10 @@
         created() {
             this.initDate();
 
-            console.log(this.startDate);
-
             this.submitForm({
                 url: "order/check",
                 data: {room_id:this.room_id},
                 callback: (data) => {
-                    console.log("order/check",data.data);
                     if (data.error == 0) {
                         if(data.data){
                             this.disabledDates=data.data.saled;
@@ -95,13 +96,13 @@
             ...mapActions(['submitForm']),
             changeWeek(times) {//修改星期
                 let time = times;
-                this.inDate = "0"+(time.getMonth() + 1 )+ "月" +time.getDate() + "日";
-                this.outDate ="0"+ (time.getMonth() + 1 )+ "月" +(time.getDate() + 1 + "日");
-                let day = time.getDay();
-                this.inWeek = "周" + "日一二三四五六".charAt(day);
 
-                time.setTime(time.getTime() + 24 * 60 * 60 * 1000);
-                this.outWeek = "周" + "日一二三四五六".charAt(time.getDay());
+                this.inDate=moment().format("MM月DD日");
+                this.outDate=moment().add(1, 'days').format("MM月DD日");
+
+                this.inWeek = "周" + "日一二三四五六".charAt(moment().day());
+
+                this.outWeek = "周" + "日一二三四五六".charAt(moment().add(1, 'days').day());
             },
             upDate(e){
                 let disDate=this.disabledDates;
@@ -132,29 +133,36 @@
 
                 }
 
+
                 this.initDateIn=e.start;
                 this.initDateOut=e.end;
                 this.inDate=this.changeRiQi(e.start);
                 let start=new Date(e.start);
+                console.log(start);
                 this.inWeek = "周" + "一二三四五六日".charAt(start.getDay());
 
-                if(e.start==e.end){
-                    let endTimeArr= e.end.split("-");
-                    endTimeArr[2]=parseInt(endTimeArr[2])+1;
-                    this.outDate=this.changeRiQi(endTimeArr.join("-"));
-                    let end=new Date(endTimeArr.join("-"));
-                    this.outWeek = "周" + "一二三四五六日".charAt(end.getDay());
-                    e.end=endTimeArr.join("-");
-                }else{
-                    this.outDate=this.changeRiQi(e.end);
-                    let end=new Date(e.end);
-                    this.outWeek = "周" + "一二三四五六日".charAt(end.getDay());
-                }
+
+                this.outDate=this.changeRiQi(e.end);
+                let end=new Date(e.end);
+                this.outWeek = "周" + "一二三四五六日".charAt(end.getDay());
 
                 e.roomInfo=this.roomInfo;
-                console.log(e);
                 this.$emit("changeTimeTwo",e);
-
+                // if(e.start==e.end){
+                //     // let endTimeArr= e.end.split("-");
+                //     // endTimeArr[2]=parseInt(endTimeArr[2]);
+                //     // this.outDate=this.changeRiQi(endTimeArr.join("-"));
+                //
+                //     this.outDate=this.changeRiQi(e.end);
+                //     let end=new Date(e.end);
+                //     this.outWeek = "周" + "一二三四五六日".charAt(end.getDay());
+                //
+                //     // e.end=endTimeArr.join("-");
+                // }else{
+                //     this.outDate=this.changeRiQi(e.end);
+                //     let end=new Date(e.end);
+                //     this.outWeek = "周" + "一二三四五六日".charAt(end.getDay());
+                // }
             },
             changeRiQi(e){
                 let arr = e.toString().split("-");
@@ -163,11 +171,14 @@
             },
             initDate(){
                 let times = new Date();
-                if (this.over > 24) {
-                    times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
-                } else {
-                    times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
-                }
+
+                // if (this.over > 24) {
+                //     times.setTime(times.getTime() + 24 * 60 * 60 * 1000);
+                // } else {
+                //     times.setTime(times.getTime() - 24 * 60 * 60 * 1000);
+                // }
+
+
                 this.changeWeek(times);
                 this.time = times.toLocaleDateString();
             },

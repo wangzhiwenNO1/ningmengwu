@@ -76,10 +76,7 @@
             // console.log(localStorage.getItem("PHPSESSID"));
         },
         mounted(){
-            document.cookie="name=abc";
-            let coo=document.cookie;
-            console.log("document.cookie",coo);
-            console.log("loca",localStorage.getItem("PHPSESSID"));
+
         },
         methods: {
             ...mapActions(['submitForm']),
@@ -122,7 +119,7 @@
                         wx.config(data.data);
                         that.getHotel();
                         if(that.latitudes){
-                            that.getHotel()
+                            that.getHotel();
                         }else{
                             wx.ready(function(){
                                 // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
@@ -134,7 +131,8 @@
                                         // var speed = res.speed; // 速度，以米/每秒计
                                         // var accuracy = res.accuracy; // 位置精度
                                         console.log(res);
-                                        that.getHotel()
+                                        that.getHotel();
+                                        alert(res)
                                     }
                                 });
                             });
@@ -145,6 +143,7 @@
             changeDistance(){
                 this.current_page=1;
                 this.sort=1;
+                console.log(this.sort);
                 this.getHotel();
             },
             changeInput(){
