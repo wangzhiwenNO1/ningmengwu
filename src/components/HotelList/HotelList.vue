@@ -9,8 +9,10 @@
                         <i class="icon" @click="changeInput"></i>
                     </div>
                 </el-col>
-                <el-col :span="6" class="place" @click="changeDistance">
-                    <i class="icon"></i>离我最近
+                <el-col :span="6" class="place">
+                    <div @click="changeSite">
+                        <i class="icon"></i>离我最近
+                    </div>
                 </el-col>
             </el-row>
         </div>
@@ -140,13 +142,13 @@
                     }
                 })
             },
-            changeDistance(){
+            changeSite(){
                 this.current_page=1;
                 this.sort=1;
-                console.log(this.sort);
                 this.getHotel();
             },
             changeInput(){
+                this.current_page=1;
                 this.getHotel();
             },
             load () {

@@ -69,9 +69,9 @@
                     url: "operate/lists", data: {page:this.current_page}, callback: (data) => {
                         console.log("operate/lists", data.data);
                         if (data.error == 0) {
-                            // data.data.data.forEach((item) => {
-                            //     item.create_time = this.formatTime(item.create_time * 1000, 'Y-M-D h:m:s')
-                            // });
+                            data.data.data.forEach((item) => {
+                                item.create_time = this.formatTime(item.create_time * 1000, 'Y-M-D h:m:s')
+                            });
                             if(data.data.current_page==1){
                                 this.dataList = data.data.data;
                             }else{
@@ -212,6 +212,7 @@
                 justify-content: space-between;
                 align-items: center;
                 padding: 3px 0 10px;
+                font-size:0.9rem;
 
                 .icon {
                     width: 9px;
