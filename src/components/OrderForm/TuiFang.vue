@@ -74,6 +74,8 @@
 <script>
     // @ is an alias to /src
     import {mapActions} from 'vuex'
+    import moment from "moment"
+    moment.locale('zh-cn');
     export default {
         name: 'TuiFang',
         components: {
@@ -115,8 +117,8 @@
             inWeek(){
                 if(this.orderInfo){
                     let start=new Date(this.orderInfo.begin_date);
-                    console.log(start.getDay());
-                    let inWeek="周" + "日一二三四五六".charAt(start.getDay())
+
+                    let inWeek="周" + "日一二三四五六".charAt(start.getDay());
                     return inWeek;
                 }
 
@@ -124,7 +126,7 @@
             outWeek(){
                 if(this.orderInfo){
                     let end=new Date(this.orderInfo.end_date);
-                    let endWeek="周" + "日一二三四五六".charAt(end.getDay())
+                    let endWeek="周" + "日一二三四五六".charAt(end.getDay());
                     return endWeek;
                 }
 
@@ -134,7 +136,7 @@
 
             if(this.$route.query){
                 this.orderId=this.$route.query.order_id;
-                console.log(this.$route.query);
+
                 this.roomInfo=this.$route.query.roomInfo;
                 this.getInfo();
             }
@@ -149,9 +151,10 @@
                     url: "orderaction/checkout",
                     data: {order_id:this.orderId},
                     callback: (data) => {
-                        console.log("orderaction/checkout",data);
-                        if (data.error == 0) {
 
+                        if (data.error == 0) {
+                            this.pay=false;
+                            this.$Message.info("请等待客房查房！");
                         }else{
                             this.$Message.info(data.message);
                         }
@@ -167,7 +170,7 @@
                     url: "orderaction/info",
                     data: {order_id:this.orderId},
                     callback: (data) => {
-                        console.log("orderaction/info",data.data);
+
                         if (data.error == 0) {
                             if(data.data){
                                 data.data.idcard=data.data.idcard.replace(/^(.{6})(?:\w+)(.{4})$/, "$1****$2");

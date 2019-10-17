@@ -117,7 +117,7 @@
                 }
             },
             changeClick(idx) {
-
+                console.log(this.roomInfo);
                 switch (idx) {
                     case 1:
                         this.$router.push({path: '/order', query: {type: 1,order_id:this.roomInfo.id,roomId:this.roomInfo.room_id}});

@@ -93,6 +93,7 @@
         },
         created(){
             if(this.$route.query){
+                console.log(this.$route.query.order_id);
                 this.order_id=this.$route.query.order_id;
                 this.roomId=this.$route.query.roomId;
                 this.getInfo();

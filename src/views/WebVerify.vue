@@ -15,6 +15,7 @@
                 <h3>{{item.number}}房间</h3>
                 <ul>
                     <li><span>订单编号：</span>{{item.id+100000}}</li>
+                    <li><span>身份证号：</span>{{item.idcard}}</li>
                     <li><span>创建时间：</span>{{item.create_time}}</li>
                     <li><span>入住时间：</span>{{item.begin_date}}</li>
                     <li><span>离店时间：</span>{{item.end_date}}</li>
@@ -79,7 +80,7 @@
                                     this.dataList.push(i);
                                 })
                             }
-                            this.current_page=data.data.current_page;
+                            this.current_page++;
                             this.last_page=data.data.last_page;
                         }
                     }
@@ -89,9 +90,7 @@
                 this.loading = true;
                 if(this.current_page==this.last_page){
                     this.loading = false;
-
                 }else{
-                    this.current_page++;
                     this.getList();
                 }
             },
@@ -223,7 +222,7 @@
                 }
 
                 h3 {
-                    font-size: 14px;
+                    font-size: 16px;
                     font-weight: 400;
                     color: rgba(70, 70, 70, 1);
                     line-height: 16px;

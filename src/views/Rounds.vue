@@ -3,7 +3,7 @@
         <div class="modalBox" v-if="isShow">
             <div class="modal">
                 <h4>提示</h4>
-                <div class="text">是否上传房间信息</div>
+                <div class="text"></div>
                 <div class="btnRow">
                     <Button @click="uploadInfo(1)">确定</Button>
                     <Button @click="uploadInfo(2)">取消</Button>
@@ -103,7 +103,7 @@
                                                 this.dataList.push(i);
                                             })
                                         }
-                                        this.current_page=data.data.current_page;
+                                        this.current_page++;
                                         this.last_page=data.data.last_page;
                                     }
                                 }

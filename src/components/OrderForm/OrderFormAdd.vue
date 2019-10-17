@@ -176,9 +176,7 @@
 
             this.submitForm({
                 url: "home/option", data: {url:"/#/orderadd"}, callback: (datas) => {
-
                     wx.config(datas.data);
-
                 }
             });
 
@@ -199,7 +197,7 @@
             // let timeArr=times.toLocaleDateString().split("/");
 
             this.inDate=moment().format("YYYY-MM-DD");
-            this.outDate=moment().add(1, 'days').format("MM月DD日");
+            this.outDate=moment().add(1, 'days').format("YYYY-MM-DD");
 
         },
         methods: {
