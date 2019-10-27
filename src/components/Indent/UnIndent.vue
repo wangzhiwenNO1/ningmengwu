@@ -107,10 +107,7 @@
                 this.submitForm({
                     url: "wxpay/notice", data: {order_id: id}, callback: (data) => {
                         console.log("wxpay/notice",data);
-                        // if (data.error == 0) {
-                        //     this.$emit("changePart",2);
-                        //
-                        // }
+
                         if (data.error == 0) {
                             wx.chooseWXPay({
                                 timestamp:d.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符

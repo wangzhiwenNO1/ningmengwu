@@ -169,15 +169,15 @@
                 });
 
 
-                // this.submitForm({
-                //     url: "operate/checkin", data: {order_id:this.order_id}, callback: (data) => {
-                //         console.log("operate/checkin", data.data);
-                //         if (data.error == 0) {
-                //             this.$Message.success(data.data);
-                //             this.isShow=false;
-                //         }
-                //     }
-                // })
+                this.submitForm({
+                    url: "operate/checkout", data: {order_id:this.order_id,goods:arr}, callback: (data) => {
+                        console.log("operate/checkout", data.data);
+                        if (data.error == 0) {
+                            this.$Message.success(data.data);
+                            this.isShow=false;
+                        }
+                    }
+                })
 
             },
             // 格式化日期，如月、日、时、分、秒保证为2位数
