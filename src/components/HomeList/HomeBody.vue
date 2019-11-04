@@ -29,6 +29,7 @@
             </div>
             <div class="floor ">
                 <ul>
+                    <li  @click="changeFloor(-1)">推荐</li>
                     <li v-for="item in floor" :key="item" :class="item==1?'active':''" @click="changeFloor(item)">
                         {{item}}楼
                     </li>
@@ -92,9 +93,14 @@
             },
             changeFloor(index) {
                 console.log(index);
-                this.isRecommend=false;
-                this.currentFloor=index;
-                this.recommendFloor(this.currentFloor)
+                if(index==-1){
+                    this.recommendFloor();
+                }else{
+                    this.isRecommend=false;
+                    this.currentFloor=index;
+                    this.recommendFloor(this.currentFloor)
+                }
+
             },
             recommendFloor(floor) {
                 this.submitForm({

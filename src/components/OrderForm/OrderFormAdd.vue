@@ -157,9 +157,9 @@
                 outDate: '',//离店日期
                 isReserve: 1,//是否自己住
                 userArr: [],//添加用户
-                zhuName: "张三",//名字
-                zhuTel: "15713134646",//电话
-                zhuIdCard: "412829199012300013",//主住的身份证
+                zhuName: "",//名字
+                zhuTel: "",//电话
+                zhuIdCard: "",//主住的身份证
                 roomId: "",//房间id
                 overTime:'',//当前是否超过24时
                 roomInfo:{},//房间信息
