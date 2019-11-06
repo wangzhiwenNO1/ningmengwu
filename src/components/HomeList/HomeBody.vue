@@ -35,9 +35,32 @@
                     </li>
                 </ul>
             </div>
-
         </div>
 
+        <div class="checkType" v-if="checkType">
+            <div class="checkBox" >
+                <div class="roomImg">
+                    <Carousel v-model="value1" loop :radius-dot="true" arrow="always">
+                        <CarouselItem>
+                            <div class="demo-carousel">1</div>
+                        </CarouselItem>
+                        <CarouselItem>
+                            <div class="demo-carousel">2</div>
+                        </CarouselItem>
+                        <CarouselItem>
+                            <div class="demo-carousel">3</div>
+                        </CarouselItem>
+                        <CarouselItem>
+                            <div class="demo-carousel">4</div>
+                        </CarouselItem>
+                    </Carousel>
+                </div>
+                <div class="btnRow">
+                    <div class="btns">全天房</div>
+                    <div class="btns">钟点房</div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -55,6 +78,8 @@
                 currentFloor:"",
                 floor: "",
                 minTime:"",//判断是否在零点之前
+                value1: 0,
+                checkType:false,//是否显示选择房间类型
             }
         },
         computed: {},
@@ -66,18 +91,36 @@
         methods: {
             ...mapActions(['submitForm']),
             jump(id) {
+
                 let roomInfo={};
                 this.recommendList.forEach((item)=>{
                     if(item.id==id){
                         roomInfo=item;
                     }
-                })
-                this.$router.push({name: 'orderadd',params: {
-                        minTime: this.minTime,
-                        id:id,
-                        roomInfo:roomInfo
-                    }
                 });
+
+                this.getInfo(id);
+
+                // this.$router.push({name: 'orderadd',params: {
+                //         minTime: this.minTime,
+                //         id:id,
+                //         roomInfo:roomInfo
+                //     }
+                // });
+            },
+            getInfo(id){
+                this.submitForm({
+                    url: "order/check",
+                    data: {room_id:id},
+                    callback: (data) => {
+                        console.log(data);
+
+                        if (data.error == 0) {
+                        }else{
+                            this.$Message.info(data.message);
+                        }
+                    }
+                })
             },
             getBanner() {
                 this.submitForm({
@@ -116,6 +159,52 @@
     }
 </script>
 <style lang="less" scoped>
+    .checkType{
+        width:100%;
+        height: calc(100vh - 50px);
+        background: rgba(0,0,0,0.5);
+        position: fixed;
+        top:0;
+        left:0;
+        color:#ffffff;
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .checkBox{
+            width:100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .roomImg{
+            width:300px;
+            height:300px;
+            background: #ffffff;
+        }
+        .demo-carousel{
+            width:300px;
+            height:300px;
+        }
+
+        .btnRow{
+            margin: 1rem;
+            display: flex;
+            width:300px;
+            justify-content: space-around;
+            .btns{
+                width:100px;
+                height: 30px;
+                line-height: 30px;
+                background: #c79f61;
+                border-radius: 10px;
+                font-size:13px;
+            }
+        }
+    }
     .el-carousel__item h3 {
         color: #475669;
         font-size: 14px;
